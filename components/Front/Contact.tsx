@@ -16,9 +16,8 @@ import Link from "@mui/material/Link";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import BusinessIcon from "@mui/icons-material/Business";
-import { BorderColor } from "@node_modules/@mui/icons-material";
 
-// Create motion-enabled components
+// Motion-enabled components
 const MotionBox = motion(Box);
 const MotionTypography = motion(Typography);
 
@@ -47,8 +46,12 @@ const Contact = () => {
       });
 
       const result = await response.json();
-      if (result.success) alert("Thank you for your submission!");
-      else alert("Submission failed. Please try again.");
+      if (result.success) {
+        alert("Thank you for your submission!");
+        form.reset();
+      } else {
+        alert("Submission failed. Please try again.");
+      }
     } catch (error) {
       alert("An error occurred. Please try again.");
       console.error("Error submitting form:", error);
@@ -60,41 +63,38 @@ const Contact = () => {
       id="contact"
       sx={{
         position: "relative",
-        py: 16,
-        px: 6,
+        py: 12,
+        px: 4,
         background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${theme.palette.primary.dark})`,
         color: theme.palette.text.primary,
       }}
     >
       <Container maxWidth="lg">
-        <Grid container spacing={6} alignItems="center">
+        <Grid container spacing={4} alignItems="center">
           {/* Contact Form */}
           <Grid item xs={12} lg={6}>
             <MotionBox
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              viewport={{ once: false, amount: 0.3 }}
               transition={{ duration: 1 }}
               sx={{
-                backgroundColor: alpha(theme.palette.common.white, 0.9),
+                backgroundColor: alpha(theme.palette.common.white, 0.85),
                 borderRadius: 2,
-                boxShadow: theme.shadows[4],
-                p: 4,
+                boxShadow: theme.shadows[3],
+                p: 3,
               }}
             >
               <MotionTypography
-                initial={{ opacity: 0, y: -20 }}
+                initial={{ opacity: 0, y: -10 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 1, delay: 0.3 }}
-                variant="h4"
+                variant="h5"
                 align="center"
                 sx={{
-                  fontWeight: "extrabold",
+                  fontWeight: "bold",
                   color: theme.palette.grey[800],
-                  mb: 3,
+                  mb: 2,
+                  fontSize: "1.25rem",
                 }}
               >
                 {t("title")}
@@ -105,14 +105,12 @@ const Contact = () => {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: 3,
+                  gap: 2,
                 }}
               >
                 <MotionBox
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  viewport={{ once: false, amount: 0.3 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   <TextField
@@ -123,35 +121,23 @@ const Contact = () => {
                     label={t("name")}
                     required
                     sx={{
-                      // Target the outlined input wrapper
                       "& .MuiOutlinedInput-root": {
-                        // Set the border color for the default state
-                        "& fieldset": {
-                          borderColor: "black",
-                        },
-                        // When hovering, keep the border black
-                        "&:hover fieldset": {
-                          borderColor: "secondary.dark",
-                        },
-                        // When focused, keep the border black
-                        "&.Mui-focused fieldset": {
-                          borderColor: "primary",
-                        },
-                        // Set the input text color
-                        color: "black",
+                        "& fieldset": { borderColor: theme.palette.grey[700] },
+                        "&:hover fieldset": { borderColor: theme.palette.primary.dark },
+                        "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
+                        color: theme.palette.secondary.contrastText,
                       },
-                      // Also style the label (if needed)
                       "& .MuiInputLabel-root": {
-                        color: "black",
+                        color: theme.palette.secondary.contrastText,
+                        fontSize: "0.875rem",
                       },
+                      fontSize: "0.875rem",
                     }}
                   />
                 </MotionBox>
                 <MotionBox
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  viewport={{ once: false, amount: 0.3 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
                   <TextField
@@ -162,35 +148,23 @@ const Contact = () => {
                     label={t("emailentry")}
                     required
                     sx={{
-                      // Target the outlined input wrapper
                       "& .MuiOutlinedInput-root": {
-                        // Set the border color for the default state
-                        "& fieldset": {
-                          borderColor: "black",
-                        },
-                        // When hovering, keep the border black
-                        "&:hover fieldset": {
-                          borderColor: "secondary.dark",
-                        },
-                        // When focused, keep the border black
-                        "&.Mui-focused fieldset": {
-                          borderColor: "primary",
-                        },
-                        // Set the input text color
-                        color: "black",
+                        "& fieldset": { borderColor: theme.palette.grey[700] },
+                        "&:hover fieldset": { borderColor: theme.palette.primary.dark },
+                        "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
+                        color: theme.palette.secondary.contrastText,
                       },
-                      // Also style the label (if needed)
                       "& .MuiInputLabel-root": {
-                        color: "black",
+                        color: theme.palette.secondary.contrastText,
+                        fontSize: "0.875rem",
                       },
+                      fontSize: "0.875rem",
                     }}
                   />
                 </MotionBox>
                 <MotionBox
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  viewport={{ once: false, amount: 0.3 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
                 >
                   <TextField
@@ -202,53 +176,41 @@ const Contact = () => {
                     multiline
                     rows={4}
                     sx={{
-                      // Target the outlined input wrapper
                       "& .MuiOutlinedInput-root": {
-                        // Set the border color for the default state
-                        "& fieldset": {
-                          borderColor: "black",
-                        },
-                        // When hovering, keep the border black
-                        "&:hover fieldset": {
-                          borderColor: "secondary.dark",
-                        },
-                        // When focused, keep the border black
-                        "&.Mui-focused fieldset": {
-                          borderColor: "primary",
-                        },
-                        // Set the input text color
-                        color: "black",
+                        "& fieldset": { borderColor: theme.palette.grey[700] },
+                        "&:hover fieldset": { borderColor: theme.palette.primary.dark },
+                        "&.Mui-focused fieldset": { borderColor: theme.palette.primary.main },
+                        color: theme.palette.secondary.contrastText,
                       },
-                      // Also style the label (if needed)
                       "& .MuiInputLabel-root": {
-                        color: "black",
+                        color: theme.palette.secondary.contrastText,
+                        fontSize: "0.875rem",
                       },
+                      fontSize: "0.875rem",
                     }}
                   />
-
                 </MotionBox>
                 <MotionBox
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
                   transition={{ type: "spring", stiffness: 200, damping: 10 }}
                 >
                   <Button
                     type="submit"
                     fullWidth
                     sx={{
-                      py: 1.5,
-                      background: (theme) =>
-                        `linear-gradient(to right, ${theme.palette.error.main}, ${theme.palette.error.light})`,
+                      py: 1,
+                      background: `linear-gradient(to right, ${theme.palette.error.main}, ${theme.palette.error.light})`,
                       color: theme.palette.common.white,
                       fontWeight: "bold",
                       borderRadius: 2,
-                      boxShadow: theme.shadows[4],
+                      boxShadow: theme.shadows[3],
                       textTransform: "none",
+                      fontSize: "0.875rem",
                       transition: "all 0.3s",
                       "&:hover": {
                         opacity: 0.9,
-                        background: (theme) =>
-                          `linear-gradient(to right, ${theme.palette.error.main}, ${theme.palette.error.light})`,
+                        background: `linear-gradient(to right, ${theme.palette.error.main}, ${theme.palette.error.light})`,
                       },
                     }}
                   >
@@ -262,48 +224,50 @@ const Contact = () => {
           {/* Contact Information */}
           <Grid item xs={12} lg={6}>
             <MotionBox
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 50 }}
-              viewport={{ once: false, amount: 0.3 }}
               transition={{ duration: 1 }}
               sx={{
                 textAlign: { xs: "center", lg: "left" },
                 display: "flex",
                 flexDirection: "column",
-                gap: 3,
+                gap: 2,
               }}
             >
               <Typography
-                variant="h5"
-                sx={{ fontWeight: "extrabold", color: theme.palette.warning.main }}
+                variant="h6"
+                sx={{
+                  fontWeight: "bold",
+                  color: theme.palette.warning.contrastText,
+                  fontSize: "1rem",
+                }}
               >
                 {t("contact information")}
               </Typography>
               <MotionBox
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
-                sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
               >
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: { xs: "center", lg: "flex-start" },
-                    gap: 2,
+                    gap: 1,
                   }}
                 >
-                  <PhoneIcon sx={{ color: theme.palette.warning.main, fontSize: 28 }} />
+                  <PhoneIcon sx={{ color: theme.palette.warning.main, fontSize: 24 }} />
                   <Link
                     href="tel:+358442413840"
                     underline="none"
                     sx={{
-                      fontSize: "1rem",
+                      fontSize: "0.875rem",
                       color: theme.palette.text.primary,
                       "&:hover": { color: theme.palette.warning.light },
                     }}
                   >
-                    +358 44 2413 840
+                    +358 44 241 3840
                   </Link>
                 </Box>
                 <Box
@@ -311,20 +275,20 @@ const Contact = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: { xs: "center", lg: "flex-start" },
-                    gap: 2,
+                    gap: 1,
                   }}
                 >
-                  <EmailIcon sx={{ color: theme.palette.warning.main, fontSize: 28 }} />
+                  <EmailIcon sx={{ color: theme.palette.warning.main, fontSize: 24 }} />
                   <Link
-                    href="mailto:ekoforge@gmail.com"
+                    href="mailto:Air.rentals@gmail.com"
                     underline="none"
                     sx={{
-                      fontSize: "1rem",
+                      fontSize: "0.875rem",
                       color: theme.palette.text.primary,
                       "&:hover": { color: theme.palette.warning.light },
                     }}
                   >
-                    Air.rentals@gmail.com
+                    ekoforge@gmail.com
                   </Link>
                 </Box>
                 <Box
@@ -332,12 +296,15 @@ const Contact = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: { xs: "center", lg: "flex-start" },
-                    gap: 2,
+                    gap: 1,
                   }}
                 >
-                  <BusinessIcon sx={{ color: theme.palette.warning.main, fontSize: 28 }} />
-                  <Typography variant="body1" sx={{ fontSize: "1rem", color: theme.palette.text.primary }}>
-                    Wing Aviators
+                  <BusinessIcon sx={{ color: theme.palette.warning.main, fontSize: 24 }} />
+                  <Typography
+                    variant="body2"
+                    sx={{ fontSize: "0.875rem", color: theme.palette.text.primary }}
+                  >
+                    EkoForge 
                   </Typography>
                 </Box>
               </MotionBox>

@@ -5,15 +5,19 @@ import { useTranslations, useLocale } from "next-intl";
 import NextLink from "next/link";
 import NextImage from "next/image";
 import { motion } from "framer-motion";
+import { useColorMode } from "@contexts/color-mode";
 
 // MUI components
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { getTheme } from "@theme/theme";
 
 const Hero = () => {
   const t = useTranslations("HomePage");
   const locale = useLocale();
+  const { mode } = useColorMode();
+  const theme = getTheme(mode);
 
   // Framer-motion animation variants
   const fadeIn = {
@@ -31,11 +35,12 @@ const Hero = () => {
       sx={{
         position: "relative",
         width: "100%",
-        // Use minHeight instead of a fixed height
-        minHeight: { xs: "25vh", sm: "25vh", md: "40vh" },
-        // Remove overflow hidden so all content is visible
+        height: {xs:"50vh", sm:"30vh", md:"75vh"}, // Fixed hero height
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
+        alignItems: "center",
+        justifyContent: "space-between",
+        overflow: "hidden",
       }}
     >
       {/* Background Image */}
@@ -46,9 +51,7 @@ const Hero = () => {
         style={{
           position: "absolute",
           inset: 0,
-          // Note: to use theme values you might want to access the theme directly via useTheme,
-          // here we are using a string literal for simplicity.
-          backgroundColor: "black",
+          backgroundColor: theme.palette.background.default,
         }}
       >
         <NextImage
@@ -62,45 +65,52 @@ const Hero = () => {
         />
       </motion.div>
 
+      {/* Content Container */}
       <Box
         sx={{
           position: "relative",
+          zIndex: 10,
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
-          justifyContent: "space-between",
           alignItems: "center",
+          justifyContent: "space-between",
           width: "100%",
-          // Remove the fixed height to allow container to grow with its content
-          px: { xs: 0, sm: 2, md: 3, lg: 5 },
+          px: { md: 5 },
+          height: "100%",
         }}
       >
         {/* Hero Text */}
         <Box
           sx={{
-            zIndex: 10,
             maxWidth: { xs: "90%", md: "60%" },
             textAlign: "left",
-            mt: { xs: 2, md: 0 },
+            my: { xs: 4, md: 0 },
           }}
         >
-          <motion.div initial="hidden" whileInView="visible" variants={textSlideIn}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={textSlideIn}
+          >
             <Typography
               variant="h2"
               component="h1"
               sx={{
                 color: "#fff",
                 fontWeight: "bold",
-                fontSize: { xs: "2rem", sm: "3rem", md: "4rem", lg: "5rem" },
+                fontSize: { xs: "1.8rem", sm: "2.5rem", md: "3.5rem", lg: "4rem" },
                 lineHeight: 1.2,
-                textShadow: "0 2px 4px rgba(0,0,0,0.5)",
+                textShadow: "0 2px 4px rgba(0,0,0,0.6)",
               }}
             >
-              {t("Affordable Aircraft Rentals")}
+              {t("HeroTitle")}
             </Typography>
           </motion.div>
           <motion.div
             initial="hidden"
             whileInView="visible"
+            viewport={{ once: true }}
             variants={textSlideIn}
             transition={{ delay: 0.3 }}
           >
@@ -109,10 +119,11 @@ const Hero = () => {
               sx={{
                 color: "#fff",
                 mt: 2,
-                textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+                fontSize: { xs: "1rem", md: "1.25rem" },
+                textShadow: "0 1px 3px rgba(0,0,0,0.6)",
               }}
             >
-              {t("Explore the beauty of Southern Finland from the skies")}
+              {t("HeroSubTitle")}
             </Typography>
           </motion.div>
         </Box>
@@ -121,35 +132,34 @@ const Hero = () => {
         <Box
           sx={{
             width: { xs: "100%", md: "30%" },
-            // Let the CTA section grow naturally
-            height: "auto",
+            height: {md: "100%"},
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {/* Mobile CTA: Thin Box */}
+          {/* Mobile CTA */}
           <Box
             sx={{
               display: { xs: "flex", md: "none" },
               width: "100%",
-              background: (theme) =>
-                `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-              borderRadius: "12px",
-              p: 1,
-              mt: 2,
-              alignItems: "center",
-              justifyContent: "space-between",
+              background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+              p: 2,
+              alignItems: "baseline",
+              justifyContent: "space-around",
             }}
           >
-            <NextLink href={`/${locale}/book`} passHref>
+            <NextLink href={`https://calendly.com/ekoforge`} passHref>
               <Button
                 component={motion.button}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6 }}
                 variant="contained"
                 sx={{
-                  px: 2,
+                  px: 3,
                   py: 1,
                   bgcolor: "secondary.main",
                   color: "#fff",
@@ -161,20 +171,20 @@ const Hero = () => {
                 {t("CTA")}
               </Button>
             </NextLink>
-
             <NextLink href="#contact" passHref>
               <Button
                 component={motion.button}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.95 }}
                 variant="outlined"
                 sx={{
-                  px: 2,
+                  px: 3,
                   py: 1,
                   color: "#fff",
                   fontWeight: "bold",
                   borderRadius: "50px",
                   boxShadow: 3,
+                  borderColor: "#fff",
                 }}
               >
                 {t("Contact Us")}
@@ -187,90 +197,95 @@ const Hero = () => {
             sx={{
               display: { xs: "none", md: "block" },
               width: "100%",
-              height: "45vh", // Set a fixed height so the banner is visible
-              background: (theme) =>
-                `linear-gradient(to top, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-              transform: "skewX(-25deg)",
-              overflow: "hidden", // Hide any overflow outside the container
+              height: "100%", // Fill the CTA container's height (75vh)
               position: "relative",
             }}
           >
             <Box
               sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
                 width: "100%",
                 height: "100%",
-                transform: "skewX(25deg)",
-                display: "flex",
-                flexDirection: { xs: "column", xl: "row" },
-                justifyContent: "center",
-                alignItems: "center",
-                gap: { xs: 1, md: 2, lg: 3 },
-                zIndex: 1, // Ensure this content is visible
+                background: `linear-gradient(to top, ${theme.palette.primary.dark}, ${theme.palette.primary.light})`,
+                transform: "skewX(-20deg)",
+                overflow: "hidden",
+                position: "relative",
               }}
             >
-              <NextLink href={`/${locale}/book`} passHref>
-                <Button
-                  component={motion.button}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }}
-                  variant="contained"
-                  sx={{
-                    px: { xs: 3, md: 4 },
-                    py: { xs: 1, md: 2 },
-                    bgcolor: "secondary.main.dark",
-                    color: "#fff",
-                    fontWeight: "bold",
-                    borderRadius: "50px",
-                    boxShadow: 3,
-                    border: "2px solid transparent",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                >
-                  {/* Animated Border */}
-                  <Box
-                    component="span"
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  transform: "skewX(20deg)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: { xs: 1, md: 2, lg: 3 },
+                  zIndex: 1,
+                }}
+              >
+                <NextLink href={`https://calendly.com/ekoforge`} passHref>
+                  <Button
+                    component={motion.button}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6 }}
+                    variant="contained"
                     sx={{
-                      position: "absolute",
-                      inset: 0,
+                      px: { xs: 3, md: 4 },
+                      py: { xs: 1, md: 2 },
+                      bgcolor: "secondary.main",
+                      color: "#fff",
+                      fontWeight: "bold",
                       borderRadius: "50px",
+                      boxShadow: 3,
                       border: "2px solid transparent",
-                      transition: "border-color 0.3s",
-                      "&:hover": { borderColor: "secondary.main" },
+                      position: "relative",
+                      overflow: "hidden",
                     }}
-                  />
-                  {t("CTA")}
-                </Button>
-              </NextLink>
-              <NextLink href="#contact" passHref>
-                <Button
-                  component={motion.button}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  variant="outlined"
-                  sx={{
-                    px: { xs: 3, md: 4 },
-                    py: { xs: 1, md: 2 },
-                    borderColor: "#fff",
-                    color: "#fff",
-                    fontWeight: "bold",
-                    borderRadius: "50px",
-                    boxShadow: 3,
-                    zIndex: 2,
-                  }}
-                >
-                  {t("Contact Us")}
-                </Button>
-              </NextLink>
+                  >
+                    <Box
+                      component="span"
+                      sx={{
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: "50px",
+                        border: "2px solid transparent",
+                        transition: "border-color 0.3s",
+                        "&:hover": { borderColor: "secondary.main" },
+                      }}
+                    />
+                    {t("CTA")}
+                  </Button>
+                </NextLink>
+                <NextLink href="#contact" passHref>
+                  <Button
+                    component={motion.button}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.95 }}
+                    variant="outlined"
+                    sx={{
+                      px: { xs: 3, md: 4 },
+                      py: { xs: 1, md: 2 },
+                      borderColor: "#fff",
+                      color: "#fff",
+                      fontWeight: "bold",
+                      borderRadius: "50px",
+                      boxShadow: 3,
+                      zIndex: 2,
+                    }}
+                  >
+                    {t("Contact Us")}
+                  </Button>
+                </NextLink>
+              </Box>
             </Box>
           </Box>
-
         </Box>
       </Box>
     </Box>

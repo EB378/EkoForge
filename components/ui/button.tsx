@@ -3,8 +3,8 @@ import { Slot } from "@radix-ui/react-slot";
 import { styled } from "@mui/material/styles";
 import MuiButton from "@mui/material/Button";
 import type { ButtonProps as MuiButtonProps } from "@mui/material/Button";
-import { BorderColor } from "@node_modules/@mui/icons-material";
 
+// Custom button props including our extra variants and sizes.
 export interface ButtonProps extends MuiButtonProps {
   /**
    * Renders the child component without wrapping it in an additional DOM element.
@@ -14,9 +14,9 @@ export interface ButtonProps extends MuiButtonProps {
    * Custom variant styles.
    * - "default": Primary button style.
    * - "destructive": For destructive actions.
-   * - "outline": Button with border.
+   * - "outline": Button with a primary-colored border.
    * - "secondary": Secondary action style.
-   * - "ghost": Transparent background.
+   * - "ghost": Transparent background with primary text.
    * - "link": Styled as a link.
    */
   customVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
@@ -31,8 +31,7 @@ export interface ButtonProps extends MuiButtonProps {
 }
 
 const StyledButton = styled(MuiButton, {
-  shouldForwardProp: (prop) =>
-    prop !== "customVariant" && prop !== "customSize",
+  shouldForwardProp: (prop) => prop !== "customVariant" && prop !== "customSize",
 })<Pick<ButtonProps, "customVariant" | "customSize">>(({ theme, customVariant, customSize }) => {
   // Define variant styles based on the customVariant prop
   let variantStyles = {};
@@ -48,9 +47,9 @@ const StyledButton = styled(MuiButton, {
       break;
     case "outline":
       variantStyles = {
-        border: `1px solid ${theme.palette.divider}`,
-        backgroundColor: theme.palette.background.paper,
-        color: theme.palette.text.primary,
+        border: `1px solid ${theme.palette.primary.main}`,
+        backgroundColor: "transparent",
+        color: theme.palette.primary.main,
         "&:hover": {
           backgroundColor: theme.palette.action.hover,
         },
@@ -66,11 +65,14 @@ const StyledButton = styled(MuiButton, {
       };
       break;
     case "ghost":
+      // For ghost, we want a transparent background, primary text,
+      // and on hover, a subtle tint. Here we convert the primary.light hex
+      // to an rgba string with, for example, 10% opacity.
       variantStyles = {
         backgroundColor: "transparent",
-        color: theme.palette.text.primary,
+        color: theme.palette.primary.main,
         "&:hover": {
-          backgroundColor: theme.palette.action.hover,
+          backgroundColor: theme.palette.primary.main.replace("#", "rgba(") + ",0.1)",
         },
       };
       break;
@@ -86,7 +88,7 @@ const StyledButton = styled(MuiButton, {
       };
       break;
     default:
-      // "default" variant or unspecified: primary style
+      // "default" variant or unspecified: primary style.
       variantStyles = {
         backgroundColor: theme.palette.primary.main,
         color: theme.palette.primary.contrastText,
@@ -121,7 +123,6 @@ const StyledButton = styled(MuiButton, {
       };
       break;
     default:
-      // "default" size
       sizeStyles = {
         padding: theme.spacing(1, 3),
         fontSize: theme.typography.pxToRem(15),
@@ -130,9 +131,7 @@ const StyledButton = styled(MuiButton, {
   }
 
   return {
-    // Ensure text isn't automatically capitalized
-    textTransform: "none",
-    // Merge the variant and size styles into the button styling
+    textTransform: "none", // prevent automatic capitalization
     ...variantStyles,
     ...sizeStyles,
   };

@@ -3,6 +3,12 @@ import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import BookIcon from '@mui/icons-material/Book';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import BroadcastOnHomeIcon from '@mui/icons-material/BroadcastOnHome';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import {
   RefineSnackbarProvider,
   useNotificationProvider,
@@ -13,19 +19,19 @@ import { cookies } from "next/headers";
 import React, { Suspense } from "react";
 
 import { ColorModeContextProvider } from "@/contexts/color-mode";
-import { authProviderClient } from "../../providers/auth-provider/auth-provider.client";
-import { dataProvider } from "../../providers/data-provider";
+import { authProviderClient } from "@/providers/auth-provider/auth-provider.client";
+import { dataProvider } from "@/providers/data-provider";
 import type { Viewport } from "next";
 
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
-  : "http://wingtemplate.netlify.app";
+  : "https://ekoforge.com";
 
-const APP_NAME = "Wing T1";
-const APP_DEFAULT_TITLE = "Wing-T1";
+const APP_NAME = "EkoForge";
+const APP_DEFAULT_TITLE = "EkoForge";
 const APP_TITLE_TEMPLATE = "%s - PWA App";
-const APP_DESCRIPTION = "Wing-T1 Template App";
+const APP_DESCRIPTION = "EkoForge App";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -99,23 +105,66 @@ export default async function RootLayout({
                       notificationProvider={useNotificationProvider}
                       resources={[
                         {
-                          name: "members",
-                          list: "/members",
-                          create: "/members/create",
-                          edit: "/members/edit/:id",
-                          show: "/members/show/:id",
+                          name: "forge",
+                          list: `/${locale}/forge`,
                           meta: {
-                            canDelete: true,
+                            icon: <BroadcastOnHomeIcon />,
+                            label: "The Forge",
                           },
                         },
                         {
-                          name: "categories",
-                          list: "/categories",
-                          create: "/categories/create",
-                          edit: "/categories/edit/:id",
-                          show: "/categories/show/:id",
+                          name: "profiles",
+                          list: `/${locale}/profile`,
+                          edit: `/${locale}/profile/edit/:id`,
+                          meta: {
+                            icon: <AccountBoxIcon />,
+                            label: "Profile",
+                          },
+                        },
+                        {
+                          name: "clients",
+                          list: `/${locale}/crm`,
+                          create: `/${locale}/crm/create`,
+                          edit: `/${locale}/crm/edit/:id`,
+                          show: `/${locale}/crm/show/:id`,
                           meta: {
                             canDelete: true,
+                            icon: <BookIcon />,
+                            label: "CRM",
+                          },
+                        },
+                        {
+                          name: "calendar",
+                          list: `/${locale}/calendar`,
+                          create: `/${locale}/calendar/create`,
+                          edit: `/${locale}/calendar/edit/:id`,
+                          show: `/${locale}/calendar/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            icon: <CalendarMonthIcon />,
+                            label: "Calendar",
+                          },
+                        },
+                        {
+                          name: "resources",
+                          list: `/${locale}/resource`,
+                          create: `/${locale}/resource/create`,
+                          edit: `/${locale}/resource/edit/:id`,
+                          show: `/${locale}/resource/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            icon: <LibraryBooksIcon />,
+                          },
+                        },
+                        {
+                          name: "ledger",
+                          list: `/${locale}/ledger`,
+                          create: `/${locale}/ledger/create`,
+                          edit: `/${locale}/ledger/edit/:id`,
+                          show: `/${locale}/ledger/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            icon: <RequestQuoteIcon />,
                           },
                         },
                       ]}
