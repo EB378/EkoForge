@@ -38,7 +38,7 @@ interface Contact {
   role: string;
 }
 
-export default async function ContactsPage() {
+export default function ContactsPage() {
   const locale = useLocale();
   const router = useRouter();
   // Fetch clients from the "clients" resource.
