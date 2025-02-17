@@ -125,8 +125,6 @@ export default async function RootLayout({
                           name: "clients",
                           list: `/${locale}/crm`,
                           create: `/${locale}/crm/create`,
-                          edit: `/${locale}/crm/edit/:id`,
-                          show: `/${locale}/crm/show/:id`,
                           meta: {
                             canDelete: true,
                             icon: <BookIcon />,
@@ -162,6 +160,17 @@ export default async function RootLayout({
                           create: `/${locale}/ledger/create`,
                           edit: `/${locale}/ledger/edit/:id`,
                           show: `/${locale}/ledger/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            icon: <RequestQuoteIcon />,
+                          },
+                        },
+                        {
+                          name: "prospects",
+                          list: `/${locale}/prospects`,
+                          create: `/${locale}/prospects/create`,
+                          edit: `/${locale}/prospects/edit/:id`,
+                          show: `/${locale}/prospects/show/:id`,
                           meta: {
                             canDelete: true,
                             icon: <RequestQuoteIcon />,

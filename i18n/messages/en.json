@@ -130,5 +130,8 @@
     "finalCallTitle": "Ready to Take Your Business to the Next Level?",
     "finalCallText": "A bad website is costing you sales every single day. Don't let another customer slip away. Invest in a high-converting website today and watch your business soar.",
     "bookNow": "Book Now"
-  }   
+  },
+  "crm":{
+    "title":"Testimonials"
+  }
 }

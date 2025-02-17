@@ -21,6 +21,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Divider,
 } from "@mui/material";
 import {
   useGetIdentity,
@@ -33,6 +34,7 @@ import { EditButton } from "@refinedev/mui";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ArchiveIcon from "@mui/icons-material/Archive";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
 
 interface Task {
   id: number;
@@ -103,13 +105,19 @@ export default function ProfilePage() {
     }
   }, [data]);
 
-  if (!userId) return <Typography>Loading...</Typography>;
-  if (isLoading || !data?.data) return <Typography>Loading profile...</Typography>;
-  if (isError) return <Typography>Error loading profile</Typography>;
+  if (!userId) {
+    return <Typography>Loading...</Typography>;
+  }
+  if (isLoading || !data?.data) {
+    return <Typography>Loading profile...</Typography>;
+  }
+  if (isError) {
+    return <Typography>Error loading profile</Typography>;
+  }
 
   const profile = data.data;
 
-  // TASK FUNCTIONS
+  // === TASK FUNCTIONS ===
   const addTask = () => {
     if (newTask.trim() === "") return;
     const nextId = tasks.length ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
@@ -150,13 +158,21 @@ export default function ProfilePage() {
     updateProfile({ resource: "profiles", id: profile.id, values: { tasks: updatedTasks } });
   };
 
+  const unarchiveTask = (id: number) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? { ...task, archived: false } : task
+    );
+    setTasks(updatedTasks);
+    updateProfile({ resource: "profiles", id: profile.id, values: { tasks: updatedTasks } });
+  };
+
   const deleteTask = (id: number) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
     setTasks(updatedTasks);
     updateProfile({ resource: "profiles", id: profile.id, values: { tasks: updatedTasks } });
   };
 
-  // NOTE FUNCTIONS
+  // === NOTE FUNCTIONS ===
   const addNote = () => {
     if (newNote.trim() === "") return;
     const nextId = notes.length ? Math.max(...notes.map((n) => n.id)) + 1 : 1;
@@ -189,6 +205,14 @@ export default function ProfilePage() {
     updateProfile({ resource: "profiles", id: profile.id, values: { notes: updatedNotes } });
   };
 
+  const unarchiveNote = (id: number) => {
+    const updatedNotes = notes.map((n) =>
+      n.id === id ? { ...n, archived: false } : n
+    );
+    setNotes(updatedNotes);
+    updateProfile({ resource: "profiles", id: profile.id, values: { notes: updatedNotes } });
+  };
+
   const deleteNote = (id: number) => {
     const updatedNotes = notes.filter((n) => n.id !== id);
     setNotes(updatedNotes);
@@ -214,7 +238,7 @@ export default function ProfilePage() {
           <Grid container spacing={4}>
             {/* Profile Card */}
             <Grid item xs={12}>
-              <Card sx={{ boxShadow: 3, borderRadius: 2, maxWidth: 450, margin: "auto" }}>
+              <Card sx={{ margin: "auto", boxShadow: 3, borderRadius: 2 }}>
                 <CardMedia
                   component="div"
                   sx={{
@@ -249,7 +273,9 @@ export default function ProfilePage() {
                       />
                     ) : (
                       <Typography variant="h4" color="primary">
-                        {profile.fullname ? profile.fullname.charAt(0).toUpperCase() : "?"}
+                        {profile.fullname
+                          ? profile.fullname.charAt(0).toUpperCase()
+                          : "?"}
                       </Typography>
                     )}
                   </Box>
@@ -268,7 +294,8 @@ export default function ProfilePage() {
                     {t("phone")}: {profile.phone}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {t("address")}: {profile.streetaddress}, {profile.city}, {profile.country} {profile.zip}
+                    {t("address")}: {profile.streetaddress}, {profile.city},{" "}
+                    {profile.country} {profile.zip}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {t("role")}: {profile.role}
@@ -279,9 +306,10 @@ export default function ProfilePage() {
                 </CardActions>
               </Card>
             </Grid>
+
             {/* Personal Notes Card */}
             <Grid item xs={12}>
-              <Card sx={{ boxShadow: 3, borderRadius: 2, maxWidth: 450, margin: "auto" }}>
+              <Card sx={{ boxShadow: 3, borderRadius: 2, margin: "auto" }}>
                 <CardContent>
                   <Typography variant="h5" gutterBottom>
                     Personal Notes
@@ -329,13 +357,23 @@ export default function ProfilePage() {
                               >
                                 <EditIcon />
                               </IconButton>
-                              <IconButton
-                                edge="end"
-                                aria-label="archive"
-                                onClick={() => archiveNote(note.id)}
-                              >
-                                <ArchiveIcon />
-                              </IconButton>
+                              {note.archived ? (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="unarchive"
+                                  onClick={() => unarchiveNote(note.id)}
+                                >
+                                  <UnarchiveIcon />
+                                </IconButton>
+                              ) : (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="archive"
+                                  onClick={() => archiveNote(note.id)}
+                                >
+                                  <ArchiveIcon />
+                                </IconButton>
+                              )}
                               <IconButton
                                 edge="end"
                                 aria-label="delete"
@@ -346,7 +384,14 @@ export default function ProfilePage() {
                             </Box>
                           }
                         >
-                          <ListItemText primary={note.note} />
+                          <ListItemText
+                            primary={note.note}
+                            sx={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              mr: 7,
+                            }}
+                          />
                         </ListItem>
                       ))}
                     </List>
@@ -360,6 +405,7 @@ export default function ProfilePage() {
             </Grid>
           </Grid>
         </Grid>
+
         {/* Right Column: Todo List */}
         <Grid item xs={12} md={6}>
           <Card sx={{ boxShadow: 3, borderRadius: 2, maxWidth: 450, margin: "auto" }}>
@@ -409,13 +455,23 @@ export default function ProfilePage() {
                           >
                             <EditIcon />
                           </IconButton>
-                          <IconButton
-                            edge="end"
-                            aria-label="archive"
-                            onClick={() => archiveTask(task.id)}
-                          >
-                            <ArchiveIcon />
-                          </IconButton>
+                          {task.archived ? (
+                            <IconButton
+                              edge="end"
+                              aria-label="unarchive"
+                              onClick={() => unarchiveTask(task.id)}
+                            >
+                              <UnarchiveIcon />
+                            </IconButton>
+                          ) : (
+                            <IconButton
+                              edge="end"
+                              aria-label="archive"
+                              onClick={() => archiveTask(task.id)}
+                            >
+                              <ArchiveIcon />
+                            </IconButton>
+                          )}
                           <IconButton
                             edge="end"
                             aria-label="delete"
@@ -435,7 +491,11 @@ export default function ProfilePage() {
                       </ListItemIcon>
                       <ListItemText
                         primary={task.task}
-                        sx={{ textDecoration: task.completed ? "line-through" : "none" }}
+                        sx={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          mr: 7, // margin-right so text doesn't run under icons
+                        }}
                       />
                     </ListItem>
                   ))}
