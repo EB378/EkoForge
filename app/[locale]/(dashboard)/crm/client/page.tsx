@@ -4,17 +4,27 @@ import React from "react";
 import Link from "next/link";
 import {
   Box,
+  AppBar,
+  Toolbar,
+  Button,
   Typography,
+  CssBaseline,
+  GlobalStyles,
   Grid,
   Card,
+  CardContent,
+  CardMedia,
   Divider,
   useMediaQuery,
+  useTheme,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { getTheme } from "@theme/theme";
-import { useColorMode } from "@contexts/color-mode";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { LineChart } from "@mui/x-charts/LineChart";
-import { List as MuiList, EditButton, ShowButton, DeleteButton } from "@refinedev/mui";
+import { List as MuiList } from "@refinedev/mui";
 import { useList } from "@refinedev/core";
 
 /* ------------------------------------------------------------------
@@ -53,6 +63,17 @@ const growthData = [
 /* ------------------------------------------------------------------
   Type Definitions
 ------------------------------------------------------------------ */
+interface Client {
+  id: string;
+  client: string;
+  status: string;
+  signed_date: string;
+  email: string;
+  phone: string;
+  website: string;
+  primary_contact: string;
+}
+
 interface Deal {
   id: string;
   title: string;
@@ -68,75 +89,75 @@ interface Activity {
 }
 
 /* ------------------------------------------------------------------
+  Dummy Arrays for Deals & Activities
+------------------------------------------------------------------ */
+const openDeals: Deal[] = [
+  { id: "1", title: "Deal 1", amount: "$10,000", status: "Negotiation", deal_date: "2023-01-01" },
+  { id: "2", title: "Deal 2", amount: "$15,000", status: "Proposal", deal_date: "2023-02-01" },
+  { id: "3", title: "Deal 3", amount: "$8,000", status: "Prospect", deal_date: "2023-03-01" },
+];
+
+const recentActivities: Activity[] = [
+  { id: "1", title: "Email Sent", description: "Follow-up email sent to Alice Johnson." },
+  { id: "2", title: "Call Received", description: "Inbound call from Bob Smith regarding deal status." },
+  { id: "3", title: "Meeting Scheduled", description: "Meeting scheduled with Carol White for project discussion." },
+];
+
+/* ------------------------------------------------------------------
   DataGrid Columns for CRM Records (Reports Section)
 ------------------------------------------------------------------ */
 const crmColumns: GridColDef[] = [
-  { field: "client", headerName: "Client", minWidth: 150, flex: 1 },
-  { field: "status", headerName: "Status", minWidth: 100, flex: 1 },
-  { field: "primary_contact", headerName: "Primary Contact", minWidth: 150, flex: 1 },
+  { field: "id", headerName: "ID", minWidth: 70 },
+  { field: "name", headerName: "Name", minWidth: 150, flex: 1 },
   { field: "email", headerName: "Email", minWidth: 200, flex: 1 },
   { field: "phone", headerName: "Phone", minWidth: 150, flex: 1 },
-  {
-    field: "actions",
-    headerName: "Actions",
-    minWidth: 150,
-    flex: 1,
-    sortable: false,
-    renderCell: (params) => (
-      <Box sx={{ display: "flex", gap: 1 }}>
-        <EditButton hideText recordItemId={params.row.id} />
-        <ShowButton hideText recordItemId={params.row.id} />
-        <DeleteButton hideText recordItemId={params.row.id} />
-      </Box>
-    ),
-  },
 ];
 
 export default function CRMPage() {
-  const { mode } = useColorMode();
-  const theme = getTheme(mode);
+  const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
-  // Fetch CRM records for the DataGrid (resource "clients")
-  const { data: ClientsResponse, isLoading: clientsLoading, isError: clientsError } = useList({
+  // Fetch clients from the "clients" resource.
+  const {
+    data: ClientsResponse,
+    isLoading: clientsLoading,
+    isError: clientsError,
+  } = useList<Client>({
+    resource: "clients",
+    pagination: { pageSize: 5 },
+  });
+  // We expect recentClientsResponse to be in the shape: { data: Client[] }
+  const Clients: Client[] = ClientsResponse?.data ?? [];
+
+  // Fetch CRM records for the DataGrid (resource "crmRecords")
+  const {
+    data: recordsResponse,
+    isLoading: recordsLoading,
+    isError: recordsError,
+  } = useList({
+    resource: "crmRecords",
     pagination: { pageSize: 10 },
   });
-  const crmClients = ClientsResponse?.data ?? [];
-
-  // Fetch CRM records for the DataGrid (resource "deals") - only open deals
-  const { data: dealsResponse, isLoading: dealsLoading, isError: dealsError } = useList<Deal>({
-    resource: "deals",
-    filters: [
-      {
-        field: "status",
-        operator: "eq",
-        value: "open",
-      },
-    ],
-  });
-  const openDeals = dealsResponse?.data ?? [];
-
-  // Fetch CRM records for the DataGrid (resource "activities")
-  const { data: activitiesResponse, isLoading: activitiesLoading, isError: activitiesError } = useList<Activity>({
-    resource: "deals",
-    filters: [
-      {
-        field: "status",
-        operator: "eq",
-        value: "open",
-      },
-    ],
-  });
-  const recentActivities = activitiesResponse?.data ?? [];
-
+  // Assume recordsResponse.data is our array of records.
+  const crmRecords = recordsResponse?.data ?? [];
 
   return (
     <Box sx={{ p: 2 }}>
+      {/* 
+        Optional: If you want an AppBar or Navigation, you can include it here.
+        e.g., 
+        <AppBar position="static">
+          <Toolbar> ... </Toolbar>
+        </AppBar> 
+      */}
+
       {/* Dashboard Section */}
       <Box id="dashboard" sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom>
           Dashboard
         </Typography>
+
+        {/* Charts only show on large screens */}
         {isLargeScreen && (
           <Grid container spacing={4} sx={{ mb: 4 }}>
             <Grid item xs={12} md={6}>
@@ -163,6 +184,7 @@ export default function CRMPage() {
                 </Box>
               </Card>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <Card sx={{ p: 2, backgroundColor: theme.palette.strong.default }}>
                 <Typography variant="h6" gutterBottom>
@@ -193,15 +215,51 @@ export default function CRMPage() {
 
       {/* CRM Sections */}
       <Grid container spacing={4}>
+        {/* Clients Section */}
+        <Grid item xs={12} md={4}>
+          <Box id="clients">
+            <Card
+              sx={{
+                p: 2,
+                backgroundColor: theme.palette.strong.default,
+                maxHeight: 300,
+                overflowY: "auto", // fixed height + vertical scroll
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Clients
+              </Typography>
+              {clientsLoading ? (
+                <Typography>Loading clients...</Typography>
+              ) : clientsError ? (
+                <Typography>Error loading clients.</Typography>
+              ) : (
+                Clients.map((client: Client) => (
+                  <Box key={client.id} sx={{ mb: 1 }}>
+                    <Typography variant="subtitle1">{client.client}</Typography>
+                    <Typography variant="body2">{client.status}</Typography>
+                    <Typography variant="body2">{client.signed_date}</Typography>
+                    <Typography variant="body2">{client.email}</Typography>
+                    <Typography variant="body2">{client.phone}</Typography>
+                    <Typography variant="body2">{client.website}</Typography>
+                    <Typography variant="body2">{client.primary_contact}</Typography>
+                    <Divider sx={{ my: 1 }} />
+                  </Box>
+                ))
+              )}
+            </Card>
+          </Box>
+        </Grid>
+
         {/* Open Deals Section */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <Box id="deals">
             <Card
               sx={{
                 p: 2,
                 backgroundColor: theme.palette.strong.default,
-                maxHeight: { xs: "auto", md: 300 },
-                overflowY: "auto",
+                maxHeight: 300,
+                overflowY: "auto", // fixed height + vertical scroll
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -223,14 +281,14 @@ export default function CRMPage() {
         </Grid>
 
         {/* Recent Activities Section */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <Box id="activities">
             <Card
               sx={{
                 p: 2,
                 backgroundColor: theme.palette.strong.default,
-                maxHeight: { xs: "auto", md: 300 },
-                overflowY: "auto",
+                maxHeight: 300,
+                overflowY: "auto", // fixed height + vertical scroll
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -248,20 +306,30 @@ export default function CRMPage() {
         </Grid>
       </Grid>
 
-      {/* Clients Section */}
-      <Box id="Clients" sx={{ mt: 4 }}>
-        <Card
-          sx={{
-            height: 500,
-            p: 2,
-            backgroundColor: theme.palette.strong.default,
-          }}
-        >
-          <MuiList title={<Typography variant="h5">CRM Clients</Typography>}>
-            <DataGrid rows={crmClients} columns={crmColumns} />
+      {/* Reports Section */}
+      <Box id="reports" sx={{ mt: 4 }}>
+        <Card sx={{ height: 500, p: 2, backgroundColor: theme.palette.strong.default }}>
+          <Typography variant="h5" gutterBottom>
+            CRM Records
+          </Typography>
+          <MuiList title={<Typography variant="h5">CRM Records</Typography>}>
+            <DataGrid rows={crmRecords} columns={crmColumns} />
           </MuiList>
         </Card>
       </Box>
     </Box>
   );
 }
+
+/* 
+  Additional Comments:
+
+  1. The "strong" palette color is assumed to exist in your custom theme (theme.palette.strong.default). 
+     If not, replace with a suitable color or remove the backgroundColor property.
+
+  2. The sections for recent clients, deals, and activities each have 
+     maxHeight: 300 and overflowY: "auto" to create a fixed height 
+     with vertical scrolling for overflow.
+
+  3. If you want an AppBar or navigation, you can re-add your code for it above the main content.
+*/

@@ -5,35 +5,24 @@ import { Create } from "@refinedev/mui";
 import { Box, TextField, Select, MenuItem } from "@mui/material";
 import { useForm } from "@refinedev/react-hook-form";
 
-interface Client {
-  id: string;
-  client: string;
-  status: string;
-  signed_date: string;
-  email: string;
-  phone: string;
-  website: string;
-  primary_contact: string;
-}
-
 export default function CreateClient() {
-
+  // Initialize the form using refine's useForm hook.
+  // Note: We do not pass "resource" here; that is provided to the Create component.
   const {
     saveButtonProps,
-    refineCore: { queryResult },
     register,
-    control,
+    handleSubmit,
     formState: { errors },
-  } = useForm<Client>({
+  } = useForm({
     refineCoreProps: {
       meta: {
         select: "*",
       },
     },
-  }); // Do NOT pass "resource" here
+  });
 
   return (
-    <Create resource="clients">
+    <Create resource="clients" saveButtonProps={saveButtonProps}>
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2 }}

@@ -163,7 +163,7 @@ const Footer = () => {
               <Box component="li" sx={{ mb: 1 }}>
                 <Link
                   component={NextLink}
-                  href={`/${locale}/profile`}
+                  href={`/${locale}/forge`}
                   underline="hover"
                   sx={{ color: theme.palette.info.contrastText }}
                 >

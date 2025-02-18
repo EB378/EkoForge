@@ -9,6 +9,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BroadcastOnHomeIcon from '@mui/icons-material/BroadcastOnHome';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
+import Groups3Icon from '@mui/icons-material/Groups3';
 import {
   RefineSnackbarProvider,
   useNotificationProvider,
@@ -121,16 +122,92 @@ export default async function RootLayout({
                             label: "Profile",
                           },
                         },
+
+
+
+
                         {
                           name: "clients",
+                          identifier: "crm",
                           list: `/${locale}/crm`,
-                          create: `/${locale}/crm/create`,
+                          create: `/${locale}/crm/clients/create`,
+                          edit: `/${locale}/crm/clients/edit/:id`,
+                          show: `/${locale}/crm/clients/show/:id`,
                           meta: {
                             canDelete: true,
                             icon: <BookIcon />,
                             label: "CRM",
                           },
                         },
+
+
+                        
+
+                        {
+                          name: "contacts",
+                          list: `/${locale}/crm/contacts`,
+                          create: `/${locale}/crm/contacts/create`,
+                          edit: `/${locale}/crm/contacts/edit/:id`,
+                          show: `/${locale}/crm/contacts/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            hide: true,
+                            parent: "crm",
+                          },
+                        },
+                        {
+                          name: "clients",
+                          list: `/${locale}/crm/clients`,
+                          create: `/${locale}/crm/clients/create`,
+                          edit: `/${locale}/crm/clients/edit/:id`,
+                          show: `/${locale}/crm/clients/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            hide: true,
+                            parent: "crm",
+                          },
+                        },
+                        {
+                          name: "deals",
+                          list: `/${locale}/crm/deals`,
+                          create: `/${locale}/crm/deals/create`,
+                          edit: `/${locale}/crm/deals/edit/:id`,
+                          show: `/${locale}/crm/deals/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            hide: true,
+                            parent: "crm",
+                          },
+                        },
+                        {
+                          name: "activities",
+                          list: `/${locale}/crm/activities`,
+                          create: `/${locale}/crm/activities/create`,
+                          edit: `/${locale}/crm/activities/edit/:id`,
+                          show: `/${locale}/crm/activities/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            hide: true,
+                            parent: "crm",
+                          },
+                        },
+                        {
+                          name: "reports",
+                          list: `/${locale}/crm/reports`,
+                          create: `/${locale}/crm/reports/create`,
+                          edit: `/${locale}/crm/reports/edit/:id`,
+                          show: `/${locale}/crm/reports/show/:id`,
+                          meta: {
+                            canDelete: true,
+                            hide: true,
+                            parent: "crm",
+                          },
+                        },
+
+
+
+
+
                         {
                           name: "calendar",
                           list: `/${locale}/calendar`,
@@ -173,7 +250,7 @@ export default async function RootLayout({
                           show: `/${locale}/prospects/show/:id`,
                           meta: {
                             canDelete: true,
-                            icon: <RequestQuoteIcon />,
+                            icon: <Groups3Icon />,
                           },
                         },
                       ]}
@@ -182,6 +259,9 @@ export default async function RootLayout({
                         warnWhenUnsavedChanges: true,
                         useNewQueryKeys: true,
                         projectId: "L5lEaP-8nnveC-aoPsCf",
+                        title: {
+                          text: APP_DEFAULT_TITLE,
+                        },
                       }}
                     >
                       {children}
