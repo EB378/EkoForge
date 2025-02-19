@@ -11,28 +11,40 @@ import {
   ShowButton,
   useDataGrid,
 } from "@refinedev/mui";
+import { useList } from "@refinedev/core";
 
-export default function LogbookList() {
-  // Configure the data grid for the "logbook"
+export default function LedgerList() {
+  // Configure the data grid for the ledger resource.
   const { dataGridProps } = useDataGrid({
     syncWithLocation: true,
     meta: { select: "*" },
   });
-  console.log("Fetched data:", dataGridProps);
+  console.log("Fetched ledger data:", dataGridProps);
+
+  // Fetch all transaction sources.
+  const {
+    data: transactionSourcesData,
+    isLoading: transactionSourcesLoading,
+    isError: transactionSourcesError,
+  } = useList({
+    resource: "transaction_sources",
+  });
+
+  const transactionSources = transactionSourcesData?.data ?? [];
 
   const columns = React.useMemo<GridColDef[]>(
     () => [
       {
         field: "id",
-        headerName: "Log ID",
+        headerName: "Ledger ID",
         type: "number",
         minWidth: 70,
         headerAlign: "left",
         align: "left",
       },
       {
-        field: "date",
-        headerName: "Date",
+        field: "transaction_date",
+        headerName: "Transaction Date",
         type: "date",
         minWidth: 100,
         headerAlign: "left",
@@ -44,165 +56,125 @@ export default function LogbookList() {
         ),
       },
       {
-        field: "pic",
-        headerName: "Pilot in Command",
+        field: "amount",
+        headerName: "Amount",
+        type: "number",
         minWidth: 150,
         headerAlign: "left",
         align: "left",
         renderCell: ({ value }: GridRenderCellParams<any>) => (
           <Typography variant="body2">{value || "-"}</Typography>
         ),
-      },      
+      },
       {
-        field: "pax",
-        headerName: "Passengers",
-        type: "number",
+        field: "entry_type",
+        headerName: "Entry",
         minWidth: 100,
         headerAlign: "left",
         align: "left",
       },
       {
-        field: "departure",
-        headerName: "Departure",
+        field: "sale",
+        headerName: "Sale",
         minWidth: 150,
         headerAlign: "left",
         align: "left",
       },
       {
-        field: "arrival",
-        headerName: "Arrival",
+        field: "transaction_source", // This column will display the text from the transaction source.
+        headerName: "Transaction Source",
         minWidth: 150,
         headerAlign: "left",
         align: "left",
-      },
-      {
-        field: "offblock",
-        headerName: "Offblock",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "takeoff",
-        headerName: "Takeoff",
-        type: "dateTime",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "landing",
-        headerName: "Landing",
-        type: "dateTime",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "onblock",
-        headerName: "Onblock",
-        type: "dateTime",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "landings",
-        headerName: "Landings",
-        type: "number",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "flightrules",
-        headerName: "Flight Rules",
-        minWidth: 120,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "night",
-        headerName: "Night",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "ir",
-        headerName: "IR",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "fuel",
-        headerName: "Fuel",
-        type: "number",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "flight_type",
-        headerName: "Flight Type",
-        minWidth: 120,
-        headerAlign: "left",
-        align: "left",
+        renderCell: ({ value }: GridRenderCellParams<any>) => {
+          // Find the matching transaction source by UUID.
+          const ts = transactionSources.find((item: any) => item.id === value);
+          return (
+            <Typography variant="body2">
+              {ts && ts.title ? ts.title : value || "-"}
+            </Typography>
+          );
+        },
       },
       {
         field: "details",
         headerName: "Details",
-        minWidth: 200,
+        minWidth: 150,
         headerAlign: "left",
         align: "left",
-        renderCell: ({ value }: GridRenderCellParams<any>) => {
-          if (!value) return "-";
-          return (
-            <Typography variant="body2" noWrap>
-              {value}
-            </Typography>
-          );
-        },
       },
       {
-        field: "billing_details",
-        headerName: "Billing Details",
-        minWidth: 200,
+        field: "internal_details",
+        headerName: "Internal Details",
+        minWidth: 150,
         headerAlign: "left",
         align: "left",
-        renderCell: ({ value }: GridRenderCellParams<any>) => {
-          if (!value) return "-";
-          return (
-            <Typography variant="body2" noWrap>
-              {value}
-            </Typography>
-          );
-        },
+      },
+      {
+        field: "deal",
+        headerName: "Deal",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
+      },
+      {
+        field: "responsible_person",
+        headerName: "Responsible Person",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
+      },
+      {
+        field: "sales_person",
+        headerName: "Sales Person",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
+      },
+      {
+        field: "created_by",
+        headerName: "Created By",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
+      },
+      {
+        field: "account_details",
+        headerName: "Account Details",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
+      },
+      {
+        field: "invoice_number",
+        headerName: "Invoice Number",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
+      },
+      {
+        field: "currency",
+        headerName: "Currency",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
       },
       {
         field: "created_at",
         headerName: "Created At",
+        type: "dateTime",
+        minWidth: 150,
+        headerAlign: "left",
+        align: "left",
+        valueGetter: ({ value }: GridRenderCellParams<any>) =>
+          value ? new Date(value) : null,
+        renderCell: ({ value }: GridRenderCellParams<any>) => (
+          <DateField value={value} />
+        ),
+      },
+      {
+        field: "updated_at",
+        headerName: "Updated At",
         type: "dateTime",
         minWidth: 150,
         headerAlign: "left",
@@ -220,27 +192,21 @@ export default function LogbookList() {
         headerAlign: "right",
         align: "right",
         sortable: false,
-        display: "flex",
-        renderCell: function render({ row }) {
-          return (
-            <>
-              <EditButton hideText recordItemId={row.id} />
-              <ShowButton hideText recordItemId={row.id} />
-              <DeleteButton hideText recordItemId={row.id} />
-            </>
-          );
-        },
+        renderCell: ({ row }) => (
+          <>
+            <EditButton hideText recordItemId={row.id} />
+            <ShowButton hideText recordItemId={row.id} />
+            <DeleteButton hideText recordItemId={row.id} />
+          </>
+        ),
       },
     ],
-    []
+    [transactionSources]
   );
 
   return (
     <List>
-      <DataGrid
-        {...dataGridProps}
-        columns={columns}
-      />
+      <DataGrid {...dataGridProps} columns={columns} />
     </List>
   );
 }

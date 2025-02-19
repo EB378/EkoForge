@@ -5,20 +5,24 @@ import { Create } from "@refinedev/mui";
 import { Box, TextField } from "@mui/material";
 import { useForm } from "@refinedev/react-hook-form";
 
-interface Contact {
-  id: string;
-  client_id: string;
-  name: string;
-  email: string;
-  phone: string;
-  role: string;
-}
 
 export default function CreateContact() {
-  const { register, handleSubmit, formState: { errors } } = useForm<Contact>(); // no resource here
+  const {
+    saveButtonProps,
+    register,
+    handleSubmit,
+    formState: { errors },
+    refineCore: { formLoading, onFinish },
+  } = useForm({
+    refineCoreProps: {
+      meta: {
+        select: "*",
+      },
+    },
+  });
 
   return (
-    <Create resource="contacts">
+    <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2 }}

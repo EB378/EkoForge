@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import {
   Box,
   Typography,
@@ -18,53 +17,28 @@ import { List as MuiList, EditButton, ShowButton, DeleteButton } from "@refinede
 import { useList } from "@refinedev/core";
 
 /* ------------------------------------------------------------------
-  Dummy Data for Charts
------------------------------------------------------------------- */
-const salesData = [
-  { month: "Jan", sales: 4000 },
-  { month: "Feb", sales: 3000 },
-  { month: "Mar", sales: 5000 },
-  { month: "Apr", sales: 4000 },
-  { month: "May", sales: 6000 },
-  { month: "Jun", sales: 7000 },
-  { month: "Jul", sales: 8000 },
-  { month: "Aug", sales: 5000 },
-  { month: "Sep", sales: 6000 },
-  { month: "Oct", sales: 7000 },
-  { month: "Nov", sales: 8000 },
-  { month: "Dec", sales: 9000 },
-];
-
-const growthData = [
-  { month: "Jan", customers: 50 },
-  { month: "Feb", customers: 80 },
-  { month: "Mar", customers: 65 },
-  { month: "Apr", customers: 90 },
-  { month: "May", customers: 120 },
-  { month: "Jun", customers: 150 },
-  { month: "Jul", customers: 130 },
-  { month: "Aug", customers: 160 },
-  { month: "Sep", customers: 170 },
-  { month: "Oct", customers: 180 },
-  { month: "Nov", customers: 190 },
-  { month: "Dec", customers: 220 },
-];
-
-/* ------------------------------------------------------------------
   Type Definitions
 ------------------------------------------------------------------ */
 interface Deal {
   id: string;
+  client_id: string; //This needs to be converted to client name, using the client_id as the id in the client table
   title: string;
   amount: string;
   status: string;
   deal_date: string;
 }
 
-interface Activity {
+interface Reports {
   id: string;
+  client: string;
   title: string;
   description: string;
+}
+
+interface Sales {
+  id: string;
+  transaction_date: Date;
+  amount: number;
 }
 
 /* ------------------------------------------------------------------
@@ -115,20 +89,50 @@ export default function CRMPage() {
     ],
   });
   const openDeals = dealsResponse?.data ?? [];
+  
 
-  // Fetch CRM records for the DataGrid (resource "activities")
-  const { data: activitiesResponse, isLoading: activitiesLoading, isError: activitiesError } = useList<Activity>({
-    resource: "deals",
+  // Fetch CRM records for the DataGrid (resource "reports")
+  const { data: reportsResponse, isLoading: reportsLoading, isError: reportsError } = useList<Reports>({
+    resource: "reports",
+  });
+  const recentReports = reportsResponse?.data ?? [];
+
+  // Fetch CRM records for the DataGrid (resource "ledger")
+  const { data: salesResponse, isLoading: salesLoading, isError: salesError } = useList<Sales>({
+    resource: "ledger",
     filters: [
       {
-        field: "status",
+        field: "entry_type",
         operator: "eq",
-        value: "open",
+        value: "credit",
+      },
+      {
+        field: "sale",
+        operator: "eq",
+        value: true,
       },
     ],
   });
-  const recentActivities = activitiesResponse?.data ?? [];
 
+  
+  const salesData = salesResponse?.data ?? [];
+  console.log("Sales Data1",salesData);
+
+  // Ensure salesData is sorted by transaction_date in ascending order.
+  const sortedSalesData = [...salesData].sort(
+    (a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime()
+  );
+  console.log("Sales Data2", sortedSalesData);
+
+  const cumulativeSalesData = sortedSalesData.reduce((acc, curr, index) => {
+    const prevSum = index === 0 ? 0 : acc[index - 1].sales;
+    acc.push({
+      date: curr.transaction_date,
+      sales: prevSum + curr.amount,
+    });
+    return acc;
+  }, [] as { date: Date; sales: number }[]);
+  console.log("Sales Data3", cumulativeSalesData);
 
   return (
     <Box sx={{ p: 2 }}>
@@ -139,49 +143,25 @@ export default function CRMPage() {
         </Typography>
         {isLargeScreen && (
           <Grid container spacing={4} sx={{ mb: 4 }}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <Card sx={{ p: 2, backgroundColor: theme.palette.strong.default }}>
                 <Typography variant="h6" gutterBottom>
                   Sales Overview
                 </Typography>
                 <Box sx={{ height: 250 }}>
                   <LineChart
-                    dataset={salesData}
-                    xAxis={[{ dataKey: "month", scaleType: "band" }]}
+                    dataset={sortedSalesData.map((item) => ({ month: item.transaction_date, sales: item.amount }))}
+                    xAxis={[{ dataKey: "month", scaleType: "point" }]}
                     series={[
                       {
                         id: "sales",
                         type: "line",
-                        data: salesData.map((item) => item.sales),
+                        data: cumulativeSalesData.map((item) => item.sales),
                         dataKey: "sales",
                         color: theme.palette.primary.main,
                       },
                     ]}
-                    tooltip={{}}
-                    legend={{}}
-                  />
-                </Box>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Card sx={{ p: 2, backgroundColor: theme.palette.strong.default }}>
-                <Typography variant="h6" gutterBottom>
-                  Customer Growth
-                </Typography>
-                <Box sx={{ height: 250 }}>
-                  <LineChart
-                    dataset={growthData}
-                    xAxis={[{ dataKey: "month", scaleType: "band" }]}
-                    series={[
-                      {
-                        id: "growth",
-                        type: "line",
-                        data: growthData.map((item) => item.customers),
-                        dataKey: "customers",
-                        color: theme.palette.secondary.main,
-                      },
-                    ]}
-                    tooltip={{}}
+                    tooltip={{ trigger: 'axis' }}
                     legend={{}}
                   />
                 </Box>
@@ -207,6 +187,7 @@ export default function CRMPage() {
               <Typography variant="h6" gutterBottom>
                 Open Deals
               </Typography>
+              <Divider sx={{ my: 1 }} />
               {openDeals.map((deal: Deal) => (
                 <Box key={deal.id} sx={{ mb: 1 }}>
                   <Typography variant="subtitle1">{deal.title}</Typography>
@@ -224,7 +205,7 @@ export default function CRMPage() {
 
         {/* Recent Activities Section */}
         <Grid item xs={12} md={6}>
-          <Box id="activities">
+          <Box id="reports">
             <Card
               sx={{
                 p: 2,
@@ -234,10 +215,12 @@ export default function CRMPage() {
               }}
             >
               <Typography variant="h6" gutterBottom>
-                Recent Activities
+                Recent Reports
               </Typography>
-              {recentActivities.map((activity: Activity) => (
+              <Divider sx={{ my: 1 }} />
+              {recentReports.map((activity: Reports) => (
                 <Box key={activity.id} sx={{ mb: 1 }}>
+                  <Typography variant="subtitle1">{activity.client}</Typography>
                   <Typography variant="subtitle1">{activity.title}</Typography>
                   <Typography variant="body2">{activity.description}</Typography>
                   <Divider sx={{ my: 1 }} />
@@ -257,7 +240,7 @@ export default function CRMPage() {
             backgroundColor: theme.palette.strong.default,
           }}
         >
-          <MuiList title={<Typography variant="h5">CRM Clients</Typography>}>
+          <MuiList title={<Typography variant="h5">Clients</Typography>}>
             <DataGrid rows={crmClients} columns={crmColumns} />
           </MuiList>
         </Card>

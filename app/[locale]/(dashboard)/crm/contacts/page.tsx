@@ -58,7 +58,6 @@ export default function ContactsPage() {
     isLoading: contactsLoading,
     isError: contactsError,
   } = useList<Contact>({
-    resource: "contacts",
     filters: selectedClientId
       ? [
           {
@@ -74,36 +73,20 @@ export default function ContactsPage() {
 
   // --- Action Handlers for Clients ---
   const handleCreateClient = () => {
-    router.push(`/${locale}/crm/contacts/client/create`);
+    router.push(`/${locale}/crm/clients/create`);
   };
 
   const handleEditClient = (id: string) => {
-    router.push(`/${locale}/crm/contacts/client/edit/${id}`);
+    router.push(`/${locale}/crm/clients/edit/${id}`);
   };
 
   const handleShowClient = (id: string) => {
-    router.push(`/${locale}/crm/contacts/client/show/${id}`);
-  };
-
-  const handleDeleteClient = (id: string) => {
-    router.push(`/${locale}/crm/contacts/client/delete/${id}`);
+    router.push(`/${locale}/crm/clients/show/${id}`);
   };
 
   // --- Action Handlers for Contacts ---
   const handleCreateContact = () => {
-    router.push(`/${locale}/crm/contacts/contact/create`);
-  };
-
-  const handleEditContact = (id: string) => {
-    router.push(`/${locale}/crm/contacts/contact/edit/${id}`);
-  };
-
-  const handleShowContact = (id: string) => {
-    router.push(`/${locale}/crm/contacts/contact/show/${id}`);
-  };
-
-  const handleDeleteContact = (id: string) => {
-    router.push(`/${locale}/crm/contacts/contact/delete/${id}`);
+    router.push(`/${locale}/crm/contacts/create`);
   };
 
   return (
@@ -160,11 +143,6 @@ export default function ContactsPage() {
                             recordItemId={client.id} 
                             onClick={() => handleShowClient(client.id)}
                           />
-                        <DeleteButton
-                          hideText
-                          recordItemId={client.id}
-                          onClick={() => handleDeleteClient(client.id)}
-                        />
                       </Box>
                     </ListItemButton>
                     <Divider />
@@ -211,17 +189,14 @@ export default function ContactsPage() {
                           <EditButton
                             hideText
                             recordItemId={contact.id}
-                            onClick={() => handleEditContact(contact.id)}
                           />
                           <ShowButton 
                             hideText 
                             recordItemId={contact.id} 
-                            onClick={() => handleShowContact(contact.id)}
                           />
                           <DeleteButton
                             hideText
                             recordItemId={contact.id}
-                            onClick={() => handleDeleteContact(contact.id)}
                           />
                         </Box>
                       }

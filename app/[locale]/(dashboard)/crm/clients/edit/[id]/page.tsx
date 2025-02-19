@@ -1,20 +1,20 @@
 "use client";
 
 import React from "react";
-import { Create } from "@refinedev/mui";
+import { Edit } from "@refinedev/mui";
 import { Box, TextField, Select, MenuItem } from "@mui/material";
 import { useForm } from "@refinedev/react-hook-form";
 
-export default function CreateClient() {
-  // Initialize the form using refine's useForm hook.
-  // Note: We do not pass "resource" here; that is provided to the Create component.
+export default function EditClient() {
   const {
     saveButtonProps,
-    register,
+    refineCore: { queryResult, formLoading, onFinish },
     handleSubmit,
+    register,
+    control,
     formState: { errors },
   } = useForm({
-    refineCoreProps: {
+    refineCoreProps: { 
       meta: {
         select: "*",
       },
@@ -22,7 +22,7 @@ export default function CreateClient() {
   });
 
   return (
-    <Create resource="clients" saveButtonProps={saveButtonProps}>
+    <Edit isLoading={formLoading} saveButtonProps={saveButtonProps}>
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2 }}
@@ -55,6 +55,6 @@ export default function CreateClient() {
         <TextField label="Website" {...register("website")} />
         <TextField label="Primary Contact" {...register("primary_contact")} />
       </Box>
-    </Create>
+    </Edit>
   );
 }

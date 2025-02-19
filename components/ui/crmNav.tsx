@@ -21,17 +21,17 @@ const CrmNav = () => {
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
                 My CRM
             </Typography>
-            <Link href={`/${locale}/crm/`} passHref>
+            <Link href={`/${locale}/crm`} passHref>
             <Button color="secondary">Dashboard</Button>
             </Link>
             <Link href={`/${locale}/crm/contacts`}  passHref>
             <Button color="secondary">Contacts</Button>
             </Link>
+            <Link href={`/${locale}/crm/clients`}  passHref>
+            <Button color="secondary">Clients</Button>
+            </Link>
             <Link href={`/${locale}/crm/deals`} passHref>
             <Button color="secondary">Deals</Button>
-            </Link>
-            <Link href={`/${locale}/crm/activities`} passHref>
-            <Button color="secondary">Activities</Button>
             </Link>
             <Link href={`/${locale}/crm/reports`} passHref>
             <Button color="secondary">Reports</Button>

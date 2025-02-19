@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     default: APP_DEFAULT_TITLE,
     template: APP_TITLE_TEMPLATE,
   }, // default title
+  icons: {
+    icon: "/icon.ico",
+  },
   description: APP_DESCRIPTION,
   manifest: "/manifest.json",
   appleWebApp: {
@@ -173,18 +176,6 @@ export default async function RootLayout({
                           create: `/${locale}/crm/deals/create`,
                           edit: `/${locale}/crm/deals/edit/:id`,
                           show: `/${locale}/crm/deals/show/:id`,
-                          meta: {
-                            canDelete: true,
-                            hide: true,
-                            parent: "crm",
-                          },
-                        },
-                        {
-                          name: "activities",
-                          list: `/${locale}/crm/activities`,
-                          create: `/${locale}/crm/activities/create`,
-                          edit: `/${locale}/crm/activities/edit/:id`,
-                          show: `/${locale}/crm/activities/show/:id`,
                           meta: {
                             canDelete: true,
                             hide: true,
