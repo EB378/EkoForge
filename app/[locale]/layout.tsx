@@ -10,6 +10,12 @@ import BroadcastOnHomeIcon from '@mui/icons-material/BroadcastOnHome';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import Groups3Icon from '@mui/icons-material/Groups3';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ContactsIcon from '@mui/icons-material/Contacts';
+import StoreIcon from '@mui/icons-material/Store';
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+
 import {
   RefineSnackbarProvider,
   useNotificationProvider,
@@ -126,20 +132,27 @@ export default async function RootLayout({
                           },
                         },
 
-
-
+                        {
+                          name: "crm",
+                          identifier: "crm",
+                          meta: {
+                            icon: <BookIcon />,
+                            label: "CRM",
+                          },
+                        },
 
                         {
                           name: "clients",
-                          identifier: "crm",
+                          identifier: "dashboard",
                           list: `/${locale}/crm`,
                           create: `/${locale}/crm/clients/create`,
                           edit: `/${locale}/crm/clients/edit/:id`,
                           show: `/${locale}/crm/clients/show/:id`,
                           meta: {
-                            canDelete: true,
-                            icon: <BookIcon />,
-                            label: "CRM",
+                            canDelete: true,                            
+                            label: "Dashboard",
+                            parent: "crm",
+                            icon: <BarChartIcon />,
                           },
                         },
 
@@ -154,20 +167,23 @@ export default async function RootLayout({
                           show: `/${locale}/crm/contacts/show/:id`,
                           meta: {
                             canDelete: true,
-                            hide: true,
+                            label: "Contacts",
                             parent: "crm",
+                            icon: <ContactsIcon />,
                           },
                         },
                         {
                           name: "clients",
+                          identifier: "clients",
                           list: `/${locale}/crm/clients`,
                           create: `/${locale}/crm/clients/create`,
                           edit: `/${locale}/crm/clients/edit/:id`,
                           show: `/${locale}/crm/clients/show/:id`,
                           meta: {
                             canDelete: true,
-                            hide: true,
+                            label: "Clients",
                             parent: "crm",
+                            icon: <StoreIcon />,
                           },
                         },
                         {
@@ -178,8 +194,9 @@ export default async function RootLayout({
                           show: `/${locale}/crm/deals/show/:id`,
                           meta: {
                             canDelete: true,
-                            hide: true,
                             parent: "crm",
+                            label: "Deals",
+                            icon: <HandshakeIcon />,
                           },
                         },
                         {
@@ -190,8 +207,9 @@ export default async function RootLayout({
                           show: `/${locale}/crm/reports/show/:id`,
                           meta: {
                             canDelete: true,
-                            hide: true,
                             parent: "crm",
+                            label: "Reports",
+                            icon: <AnalyticsIcon />,
                           },
                         },
 
