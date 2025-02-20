@@ -12,10 +12,11 @@ import {
   ListItemText,
   Button,
   ListItem,
+  TextField,
 } from "@mui/material";
 import { useList } from "@refinedev/core";
 import { EditButton, ShowButton, DeleteButton } from "@refinedev/mui";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 
 interface Client {
@@ -41,6 +42,10 @@ interface Contact {
 export default function ContactsPage() {
   const locale = useLocale();
   const router = useRouter();
+
+  // State for searching contacts by name.
+  const [search, setSearch] = useState<string>("");
+
   // Fetch clients from the "clients" resource.
   const {
     data: clientsResponse,
@@ -52,13 +57,13 @@ export default function ContactsPage() {
   // State to hold the selected client's ID.
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
-  // Fetch contacts from the "contacts" resource.
+  // Fetch contacts for the selected client (only used when no search query is provided).
   const {
     data: contactsResponse,
     isLoading: contactsLoading,
     isError: contactsError,
   } = useList<Contact>({
-    filters: selectedClientId
+    filters: selectedClientId && !search
       ? [
           {
             field: "client_id",
@@ -69,7 +74,33 @@ export default function ContactsPage() {
       : [],
     pagination: { pageSize: 50 },
   });
-  const contacts: Contact[] = contactsResponse?.data ?? [];
+
+  // Fetch contacts based on the search query.
+  const {
+    data: contacts2Response,
+    isLoading: contacts2Loading,
+    isError: contacts2Error,
+  } = useList<Contact>({
+    pagination: { pageSize: 50 },
+    filters: search
+      ? [
+          {
+            field: "name",
+            operator: "contains",
+            value: search,
+          },
+        ]
+      : [],
+  });
+
+  // Use the search-based contacts if a search term exists; otherwise, use the client-filtered contacts.
+  const contacts: Contact[] = search
+    ? contacts2Response?.data ?? []
+    : contactsResponse?.data ?? [];
+
+  // Determine loading and error states.
+  const contactsLoadingState = search ? contacts2Loading : contactsLoading;
+  const contactsErrorState = search ? contacts2Error : contactsError;
 
   // --- Action Handlers for Clients ---
   const handleCreateClient = () => {
@@ -104,7 +135,9 @@ export default function ContactsPage() {
               overflowY: "auto",
             }}
           >
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+            >
               <Typography variant="h6">Clients</Typography>
               <Button variant="contained" onClick={handleCreateClient}>
                 Create Company
@@ -119,7 +152,6 @@ export default function ContactsPage() {
                 {clients.map((client) => (
                   <React.Fragment key={client.id}>
                     <ListItemButton
-                      component="li"
                       onClick={() =>
                         setSelectedClientId(
                           selectedClientId === client.id ? null : client.id
@@ -131,18 +163,17 @@ export default function ContactsPage() {
                         primary={client.client}
                         secondary={`${client.email} | ${client.phone}`}
                       />
-                      {/* Action Buttons for Company */}
                       <Box sx={{ display: "flex", gap: 1 }}>
                         <EditButton
                           hideText
                           recordItemId={client.id}
                           onClick={() => handleEditClient(client.id)}
                         />
-                        <ShowButton 
-                            hideText 
-                            recordItemId={client.id} 
-                            onClick={() => handleShowClient(client.id)}
-                          />
+                        <ShowButton
+                          hideText
+                          recordItemId={client.id}
+                          onClick={() => handleShowClient(client.id)}
+                        />
                       </Box>
                     </ListItemButton>
                     <Divider />
@@ -162,9 +193,13 @@ export default function ContactsPage() {
               overflowY: "auto",
             }}
           >
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+            >
               <Typography variant="h6">
-                {selectedClientId
+                {search
+                  ? "Search Results"
+                  : selectedClientId
                   ? `Contacts for ${
                       clients.find((c) => c.id === selectedClientId)?.client
                     }`
@@ -174,9 +209,19 @@ export default function ContactsPage() {
                 Create Contact
               </Button>
             </Box>
-            {contactsLoading ? (
+            {/* Search Field for Contacts */}
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                fullWidth
+                label="Search Contacts"
+                variant="outlined"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Box>
+            {contactsLoadingState ? (
               <Typography>Loading contacts...</Typography>
-            ) : contactsError ? (
+            ) : contactsErrorState ? (
               <Typography>Error loading contacts.</Typography>
             ) : (
               <List>
@@ -190,9 +235,9 @@ export default function ContactsPage() {
                             hideText
                             recordItemId={contact.id}
                           />
-                          <ShowButton 
-                            hideText 
-                            recordItemId={contact.id} 
+                          <ShowButton
+                            hideText
+                            recordItemId={contact.id}
                           />
                           <DeleteButton
                             hideText
@@ -211,9 +256,12 @@ export default function ContactsPage() {
                 ))}
               </List>
             )}
-            {selectedClientId && (
+            {selectedClientId && !search && (
               <Box sx={{ mt: 2 }}>
-                <Button variant="outlined" onClick={() => setSelectedClientId(null)}>
+                <Button
+                  variant="outlined"
+                  onClick={() => setSelectedClientId(null)}
+                >
                   Show All Contacts
                 </Button>
               </Box>
