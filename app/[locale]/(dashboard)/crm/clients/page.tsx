@@ -43,7 +43,6 @@ export default function ClientsPage() {
     isLoading: clientsLoading,
     isError: clientsError,
   } = useList<Client>({
-    resource: "clients",
     pagination: { pageSize: 50 },
     filters: search
       ? [
