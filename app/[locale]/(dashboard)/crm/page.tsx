@@ -151,18 +151,18 @@ export default function CRMPage() {
                 <Box sx={{ height: 250 }}>
                   <LineChart
                     dataset={sortedSalesData.map((item) => ({ month: item.transaction_date, sales: item.amount }))}
-                    xAxis={[{ dataKey: "month", scaleType: "point" }]}
+                    xAxis={[{ dataKey: "month", scaleType: "point",}]}
                     series={[
                       {
                         id: "sales",
-                        type: "line",
+                        //  type: "line",
+                        label: "Sales",
                         data: cumulativeSalesData.map((item) => item.sales),
                         dataKey: "sales",
                         color: theme.palette.primary.main,
                       },
                     ]}
-                    tooltip={{ trigger: 'axis' }}
-                    legend={{}}
+                    tooltip={{ trigger: 'item' }}
                   />
                 </Box>
               </Card>
