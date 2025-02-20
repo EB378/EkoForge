@@ -25,18 +25,6 @@ export default function DealsPage() {
     console.log("Navigate to: /en/crm/contact/deal/create");
   };
 
-  const handleEditDeal = (id: string) => {
-    console.log("Navigate to: /en/crm/contact/deal/edit/" + id);
-  };
-
-  const handleShowDeal = (id: string) => {
-    console.log("Navigate to: /en/crm/contact/deal/show/" + id);
-  };
-
-  const handleDeleteDeal = (id: string) => {
-    console.log("Navigate to: /en/crm/contact/deal/delete/" + id);
-  };
-
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -58,9 +46,9 @@ export default function DealsPage() {
               <React.Fragment key={deal.id}>
                 <ListItem component="li" secondaryAction={
                   <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button variant="text" onClick={() => handleEditDeal(deal.id)}>Edit</Button>
-                    <Button variant="text" onClick={() => handleShowDeal(deal.id)}>Show</Button>
-                    <Button variant="text" color="error" onClick={() => handleDeleteDeal(deal.id)}>Delete</Button>
+                    <EditButton hideText recordItemId={deal.id} />
+                    <ShowButton hideText recordItemId={deal.id} />
+                    <DeleteButton hideText recordItemId={deal.id} />
                   </Box>
                 }>
                   <ListItemText
