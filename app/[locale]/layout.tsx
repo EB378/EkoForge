@@ -262,6 +262,14 @@ export default async function RootLayout({
                             icon: <Groups3Icon />,
                           },
                         },
+                        {
+                          name: "prospects",
+                          identifier: "migrate",
+                          edit: `/${locale}/migrate/:id`,
+                          meta: {
+                            hide: true,
+                          },
+                        },
                       ]}
                       options={{
                         syncWithLocation: true,

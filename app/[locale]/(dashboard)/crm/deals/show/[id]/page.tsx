@@ -1,149 +1,90 @@
 "use client";
 
-import { Stack, Typography } from "@mui/material";
+import React from "react";
+import { Box, Typography, Divider, Stack } from "@mui/material";
 import { useShow } from "@refinedev/core";
-import {
-  DateField,
-  Show,
-  TextFieldComponent as TextField,
-  MarkdownField,
-} from "@refinedev/mui";
+import { DateField, MarkdownField, Show, TextFieldComponent as TextField } from "@refinedev/mui";
+import { useParams } from "next/navigation";
 
-// Define the shape of your logbook record.
-interface LogbookRecord {
-  id: string;
-  uid: string;
-  resource: string;
-  date: string;
-  pic: string;
-  pax: number;
-  departure: string;
-  arrival: string;
-  offblock: string;
-  takeoff: string;
-  landing: string;
-  onblock: string;
-  landings: number;
-  flightrules: string;
-  fuel: number;
-  flight_type: string;
-  details: string;
-  billing_details: string;
-  created_at: string;
+// Inline component to display a client's name based on clientId.
+function ClientName({ clientId }: { clientId: string }) {
+  const { queryResult } = useShow({
+    resource: "clients",
+    id: clientId,
+    meta: { select: "client" },
+    queryOptions: { enabled: !!clientId },
+  });
+  const clientData = queryResult?.data?.data as { client: string } | undefined;
+  return <>{clientData ? clientData.client : "Not Available"}</>;
 }
 
+// Inline component to display a profile's full name based on profileId.
+function ProfileName({ profileId }: { profileId: string }) {
+  const { queryResult } = useShow({
+    resource: "profiles",
+    id: profileId,
+    meta: { select: "fullname" },
+    queryOptions: { enabled: !!profileId },
+  });
+  const profileData = queryResult?.data?.data as { fullname: string } | undefined;
+  return <>{profileData ? profileData.fullname : "Not Available"}</>;
+}
 
-export default function LogbookShow() {
-    const { query } = useShow({
-      meta: {
-        select: "*",
-      },
-    });
-  
-    const { data, isLoading } = query;
-  
-    const record = data?.data;
+export default function ShowDeal(): JSX.Element {
+  const { queryResult } = useShow({
+    meta: { select: "*" },
+  });
+  const isLoading = queryResult.isLoading;
+  const isError = queryResult.isError;
 
-  console.log("Fetched logbook record:", record);
+  const deal = queryResult?.data?.data;
+
+  if (isError || !deal) return <Typography>Error loading deal details.</Typography>;
 
   return (
-    <Show isLoading={isLoading}>
-      <Stack gap={1} sx={{ p: 2 }}>
-        <Typography variant="body1" fontWeight="bold">
-          Log ID
-        </Typography>
-        <TextField value={record?.id} />
+    <Box sx={{ p: 2 }}>
+      <Show isLoading={isLoading}>
+        <Divider sx={{ mb: 2 }} />
+        <Stack spacing={2}>
+          <Typography variant="h6">Title</Typography>
+          <TextField value={deal.title} />
 
-        <Typography variant="body1" fontWeight="bold">
-          UUID
-        </Typography>
-        <TextField value={record?.uid} />
+          <Typography variant="h6">Client</Typography>
+          <TextField value={<ClientName clientId={deal.client_id} />} />
 
-        <Typography variant="body1" fontWeight="bold">
-          Resource
-        </Typography>
-        <TextField value={record?.resource} />
+          <Typography variant="h6">Accountable Person</Typography>
+          <TextField value={<ProfileName profileId={deal.profile_id} />} />
 
-        <Typography variant="body1" fontWeight="bold">
-          Date
-        </Typography>
-        <DateField value={record?.date} />
+          <Typography variant="h6">Amount</Typography>
+          <TextField value={deal.amount} />
 
-        <Typography variant="body1" fontWeight="bold">
-          Pilot in Command
-        </Typography>
-        <TextField value={record?.pic} />
+          <Typography variant="h6">Status</Typography>
+          <TextField value={deal.status} />
 
-        <Typography variant="body1" fontWeight="bold">
-          Passengers
-        </Typography>
-        <TextField value={record?.pax} />
+          <Typography variant="h6">Deal Date</Typography>
+          <DateField value={deal.deal_date} />
 
-        <Typography variant="body1" fontWeight="bold">
-          Departure
-        </Typography>
-        <TextField value={record?.departure} />
+          {deal.details && (
+            <>
+              <Typography variant="h6">Details</Typography>
+              <MarkdownField value={deal.details} />
+            </>
+          )}
 
-        <Typography variant="body1" fontWeight="bold">
-          Arrival
-        </Typography>
-        <TextField value={record?.arrival} />
+          {deal.billing_details && (
+            <>
+              <Typography variant="h6">Billing Details</Typography>
+              <MarkdownField value={deal.billing_details} />
+            </>
+          )}
 
-        <Typography variant="body1" fontWeight="bold">
-          Offblock
-        </Typography>
-        <DateField value={record?.offblock} />
+          <Typography variant="h6">Created At</Typography>
+          <DateField value={deal.created_at} />
 
-        <Typography variant="body1" fontWeight="bold">
-          Takeoff
-        </Typography>
-        <DateField value={record?.takeoff} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Landing
-        </Typography>
-        <DateField value={record?.landing} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Onblock
-        </Typography>
-        <DateField value={record?.onblock} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Landings
-        </Typography>
-        <TextField value={record?.landings} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Flight Rules
-        </Typography>
-        <TextField value={record?.flightrules} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Fuel
-        </Typography>
-        <TextField value={record?.fuel} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Flight Type
-        </Typography>
-        <TextField value={record?.flight_type} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Details
-        </Typography>
-        <MarkdownField value={record?.details} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Billing Details
-        </Typography>
-        <TextField value={record?.billing_details} />
-
-        <Typography variant="body1" fontWeight="bold">
-          Created At
-        </Typography>
-        <DateField value={record?.created_at} />
-      </Stack>
-    </Show>
+          <Typography variant="h6">Updated At</Typography>
+          <DateField value={deal.updated_at} />
+        </Stack>
+      </Show>
+    </Box>
   );
 }

@@ -86,7 +86,7 @@ export default function ClientsPage() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => router.push("/clients/create")}
+                onClick={() => router.push("/crm/clients/create")}
               >
                 Create Client
               </Button>

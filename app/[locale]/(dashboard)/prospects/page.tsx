@@ -1,246 +1,209 @@
 "use client";
 
-import React from "react";
-import { Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import React, { useState } from "react";
 import {
+  Box,
+  Grid,
+  Typography,
+  Card,
+  Divider,
   List,
-  DateField,
-  DeleteButton,
-  EditButton,
-  ShowButton,
-  useDataGrid,
-} from "@refinedev/mui";
+  ListItemButton,
+  ListItemText,
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import { useList, useUpdate } from "@refinedev/core";
+import { EditButton, DeleteButton, ShowButton } from "@refinedev/mui";
+import { useRouter } from "next/navigation";
 
-export default function LogbookList() {
-  // Configure the data grid for the "logbook"
-  const { dataGridProps } = useDataGrid({
-    syncWithLocation: true,
-    meta: { select: "*" },
+interface Prospect {
+  id: string;
+  company_name: string;
+  contact_name?: string;
+  email: string;
+  phone?: string;
+  website?: string;
+  status: string;
+  notes?: string;
+  is_migrated: boolean;
+  converted_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export default function ProspectsList() {
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  // Build filters based on search and status filter.
+  const filters = [];
+  if (search) {
+    filters.push({
+      field: "company_name",
+      operator: "contains" as "contains",
+      value: search,
+    });
+  }
+  if (statusFilter) {
+    filters.push({
+      field: "status",
+      operator: "eq" as "eq",
+      value: statusFilter,
+    });
+  }
+
+  const { data, isLoading, isError } = useList<Prospect>({
+    resource: "prospects",
+    pagination: { pageSize: 50 },
+    filters,
   });
-  console.log("Fetched data:", dataGridProps);
+  const prospects = data?.data ?? [];
 
-  const columns = React.useMemo<GridColDef[]>(
-    () => [
+  // Hook to update a prospect.
+  const { mutate: updateProspect } = useUpdate<Prospect>();
+
+  const handleStatusChange = (id: string, newStatus: string) => {
+    updateProspect(
       {
-        field: "id",
-        headerName: "Log ID",
-        type: "number",
-        minWidth: 70,
-        headerAlign: "left",
-        align: "left",
+        resource: "prospects",
+        id,
+        values: { status: newStatus },
       },
       {
-        field: "date",
-        headerName: "Date",
-        type: "date",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "pic",
-        headerName: "Pilot in Command",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <Typography variant="body2">{value || "-"}</Typography>
-        ),
-      },      
-      {
-        field: "pax",
-        headerName: "Passengers",
-        type: "number",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "departure",
-        headerName: "Departure",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "arrival",
-        headerName: "Arrival",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "offblock",
-        headerName: "Offblock",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "takeoff",
-        headerName: "Takeoff",
-        type: "dateTime",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "landing",
-        headerName: "Landing",
-        type: "dateTime",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "onblock",
-        headerName: "Onblock",
-        type: "dateTime",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "landings",
-        headerName: "Landings",
-        type: "number",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "flightrules",
-        headerName: "Flight Rules",
-        minWidth: 120,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "night",
-        headerName: "Night",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "ir",
-        headerName: "IR",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "fuel",
-        headerName: "Fuel",
-        type: "number",
-        minWidth: 100,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "flight_type",
-        headerName: "Flight Type",
-        minWidth: 120,
-        headerAlign: "left",
-        align: "left",
-      },
-      {
-        field: "details",
-        headerName: "Details",
-        minWidth: 200,
-        headerAlign: "left",
-        align: "left",
-        renderCell: ({ value }: GridRenderCellParams<any>) => {
-          if (!value) return "-";
-          return (
-            <Typography variant="body2" noWrap>
-              {value}
-            </Typography>
-          );
+        onSuccess: () => {
+          console.log(`Prospect ${id} status updated to ${newStatus}`);
         },
-      },
-      {
-        field: "billing_details",
-        headerName: "Billing Details",
-        minWidth: 200,
-        headerAlign: "left",
-        align: "left",
-        renderCell: ({ value }: GridRenderCellParams<any>) => {
-          if (!value) return "-";
-          return (
-            <Typography variant="body2" noWrap>
-              {value}
-            </Typography>
-          );
-        },
-      },
-      {
-        field: "created_at",
-        headerName: "Created At",
-        type: "dateTime",
-        minWidth: 150,
-        headerAlign: "left",
-        align: "left",
-        valueGetter: ({ value }: GridRenderCellParams<any>) =>
-          value ? new Date(value) : null,
-        renderCell: ({ value }: GridRenderCellParams<any>) => (
-          <DateField value={value} />
-        ),
-      },
-      {
-        field: "actions",
-        headerName: "Actions",
-        minWidth: 150,
-        headerAlign: "right",
-        align: "right",
-        sortable: false,
-        display: "flex",
-        renderCell: function render({ row }) {
-          return (
-            <>
-              <EditButton hideText recordItemId={row.id} />
-              <ShowButton hideText recordItemId={row.id} />
-              <DeleteButton hideText recordItemId={row.id} />
-            </>
-          );
-        },
-      },
-    ],
-    []
-  );
+      }
+    );
+  };
+
+  const handleCreate = () => router.push("/prospects/create");
 
   return (
-    <List>
-      <DataGrid
-        {...dataGridProps}
-        columns={columns}
-      />
-    </List>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Prospects
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Card sx={{ p: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              <Button variant="contained" onClick={handleCreate}>
+                Create Prospect
+              </Button>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <TextField
+                  label="Search Company"
+                  variant="outlined"
+                  size="small"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    label="Status"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    <MenuItem value="">
+                      <em>All</em>
+                    </MenuItem>
+                    <MenuItem value="1. new">1. new</MenuItem>
+                    <MenuItem value="2. contacted">2. contacted</MenuItem>
+                    <MenuItem value="3. engaged">3. engaged</MenuItem>
+                    <MenuItem value="4. interested">4. interested</MenuItem>
+                    <MenuItem value="5. salescall">5. salescall</MenuItem>
+                    <MenuItem value="6. qualified">6. qualified</MenuItem>
+                    <MenuItem value="7. negotitions">7. negotitions</MenuItem>
+                    <MenuItem value="8. signed">8. Signed</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
+            {isLoading ? (
+              <Typography>Loading prospects...</Typography>
+            ) : isError ? (
+              <Typography>Error loading prospects.</Typography>
+            ) : (
+              <List>
+                {prospects.map((prospect) => (
+                  <React.Fragment key={prospect.id}>
+                    <ListItemButton
+                      onClick={() => router.push(`/prospects/show/${prospect.id}`)}
+                    >
+                      <ListItemText
+                        primary={prospect.company_name}
+                        secondary={`Email: ${prospect.email}`}
+                      />
+                      {/* Dropdown to change prospect status */}
+                      <FormControl variant="outlined" size="small" sx={{ mr: 2 }}>
+                        <Select
+                          value={prospect.status}
+                          onChange={(e) =>
+                            handleStatusChange(prospect.id, e.target.value)
+                          }
+                        >
+                          <MenuItem value="1. new">1. new</MenuItem>
+                          <MenuItem value="2. contacted">2. contacted</MenuItem>
+                          <MenuItem value="3. engaged">3. engaged</MenuItem>
+                          <MenuItem value="4. interested">4. interested</MenuItem>
+                          <MenuItem value="5. salescall">5. salescall</MenuItem>
+                          <MenuItem value="6. qualified">6. qualified</MenuItem>
+                          <MenuItem value="7. negotitions">7. negotitions</MenuItem>
+                          <MenuItem value="8. Signed">8. Signed</MenuItem>
+                        </Select>
+                      </FormControl>
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <EditButton
+                          hideText
+                          recordItemId={prospect.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/prospects/edit/${prospect.id}`);
+                          }}
+                        />
+                        <DeleteButton hideText recordItemId={prospect.id} />
+                        <ShowButton
+                          hideText
+                          recordItemId={prospect.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/prospects/show/${prospect.id}`);
+                          }}
+                        />
+                        <Button
+                          variant="outlined"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/prospects/migrate/${prospect.id}`);
+                          }}
+                        >
+                          Migrate
+                        </Button>
+                      </Box>
+                    </ListItemButton>
+                    <Divider />
+                  </React.Fragment>
+                ))}
+              </List>
+            )}
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }

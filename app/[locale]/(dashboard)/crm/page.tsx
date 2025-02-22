@@ -14,18 +14,46 @@ import { useColorMode } from "@contexts/color-mode";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { List as MuiList, EditButton, ShowButton, DeleteButton } from "@refinedev/mui";
-import { useList } from "@refinedev/core";
+import { useList, useShow } from "@refinedev/core";
+
+
+// Component to display a client's name based on clientId.
+function ClientName({ clientId }: { clientId: string }) {
+  const { queryResult } = useShow({
+    resource: "clients",
+    id: clientId,
+    meta: { select: "client" },
+    queryOptions: { enabled: !!clientId },
+  });
+  const clientData = queryResult?.data?.data as { client: string } | undefined;
+  if (!clientData) return <span>Not Available.</span>;
+  return <span>{clientData.client}</span>;
+}
+
+// Component to display a profile's full name based on profileId.
+function ProfileName({ profileId }: { profileId: string }) {
+  const { queryResult } = useShow({
+    resource: "profiles",
+    id: profileId,
+    meta: { select: "fullname" },
+    queryOptions: { enabled: !!profileId },
+  });
+  const profileData = queryResult?.data?.data as { fullname: string } | undefined;
+  if (!profileData) return <span>Loading...</span>;
+  return <span>{profileData.fullname}</span>;
+}
 
 /* ------------------------------------------------------------------
   Type Definitions
 ------------------------------------------------------------------ */
 interface Deal {
   id: string;
-  client_id: string; //This needs to be converted to client name, using the client_id as the id in the client table
+  client_id: string;
   title: string;
   amount: string;
   status: string;
   deal_date: string;
+  profile_id: string;
 }
 
 interface Reports {
@@ -191,6 +219,8 @@ export default function CRMPage() {
               {openDeals.map((deal: Deal) => (
                 <Box key={deal.id} sx={{ mb: 1 }}>
                   <Typography variant="subtitle1">{deal.title}</Typography>
+                  <Typography variant="subtitle1"><ClientName clientId={deal.client_id}/></Typography>
+                  <Typography variant="body2"><ProfileName profileId={deal.profile_id}/></Typography>
                   <Typography variant="body2">{deal.amount}</Typography>
                   <Typography variant="body2">{deal.status}</Typography>
                   <Typography variant="body2">
@@ -218,11 +248,11 @@ export default function CRMPage() {
                 Recent Reports
               </Typography>
               <Divider sx={{ my: 1 }} />
-              {recentReports.map((activity: Reports) => (
-                <Box key={activity.id} sx={{ mb: 1 }}>
-                  <Typography variant="subtitle1">{activity.client}</Typography>
-                  <Typography variant="subtitle1">{activity.title}</Typography>
-                  <Typography variant="body2">{activity.description}</Typography>
+              {recentReports.map((reports: Reports) => (
+                <Box key={reports.id} sx={{ mb: 1 }}>
+                  <Typography variant="subtitle1"><ClientName clientId={reports.client}/></Typography>
+                  <Typography variant="subtitle1">{reports.title}</Typography>
+                  <Typography variant="body2">{reports.description}</Typography>
                   <Divider sx={{ my: 1 }} />
                 </Box>
               ))}
@@ -235,7 +265,6 @@ export default function CRMPage() {
       <Box id="Clients" sx={{ mt: 4 }}>
         <Card
           sx={{
-            height: 500,
             p: 2,
             backgroundColor: theme.palette.strong.default,
           }}

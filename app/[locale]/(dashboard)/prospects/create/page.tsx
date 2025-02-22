@@ -1,122 +1,76 @@
 "use client";
 
-import { Autocomplete, Box, MenuItem, Select, TextField } from "@mui/material";
-import { Create, useAutocomplete } from "@refinedev/mui";
+import React from "react";
+import { Edit } from "@refinedev/mui";
+import {
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useForm } from "@refinedev/react-hook-form";
 import { Controller } from "react-hook-form";
 
-export default function BlogPostCreate() {
+export default function EditProspect() {
   const {
     saveButtonProps,
-    refineCore: { formLoading, onFinish },
+    refineCore: { queryResult, formLoading, onFinish },
     handleSubmit,
     register,
     control,
     formState: { errors },
-  } = useForm({});
-
-  const { autocompleteProps: categoryAutocompleteProps } = useAutocomplete({
-    resource: "categories",
+  } = useForm({
+    refineCoreProps: { 
+      meta: {
+        select: "*",
+      },
+    },
   });
+  console.log("queryResult", queryResult);
 
   return (
-    <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
+    <Edit isLoading={formLoading} saveButtonProps={saveButtonProps}>
       <Box
         component="form"
-        sx={{ display: "flex", flexDirection: "column" }}
-        autoComplete="off"
+        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
       >
         <TextField
-          {...register("title", {
-            required: "This field is required",
+          label="Prospect Name"
+          {...register("company_name", {
+            required: "Company name is required",
           })}
-          error={!!(errors as any)?.title}
-          helperText={(errors as any)?.title?.message}
-          margin="normal"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          type="text"
-          label={"Title"}
-          name="title"
+          error={!!errors.company_name}
+          helperText={errors.company_name?.message as string | undefined}
         />
-        <TextField
-          {...register("content", {
-            required: "This field is required",
-          })}
-          error={!!(errors as any)?.content}
-          helperText={(errors as any)?.content?.message}
-          margin="normal"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          multiline
-          label={"Content"}
-          name="content"
-        />
+        <TextField label="Email" {...register("email")} />
+        <TextField label="Phone" {...register("phone")} />
+        <TextField label="Website" {...register("website")} />
+        <TextField label="Primary Contact" {...register("contact_name")} />
         <Controller
           control={control}
-          name={"categoryId"}
+          name="status"
           rules={{ required: "This field is required" }}
-          // eslint-disable-next-line
-          defaultValue={null as any}
+          defaultValue="1. new"
           render={({ field }) => (
-            <Autocomplete
-              {...categoryAutocompleteProps}
-              {...field}
-              onChange={(_, value) => {
-                field.onChange(value.id);
-              }}
-              getOptionLabel={(item) => {
-                return (
-                  categoryAutocompleteProps?.options?.find((p) => {
-                    const itemId =
-                      typeof item === "object"
-                        ? item?.id?.toString()
-                        : item?.toString();
-                    const pId = p?.id?.toString();
-                    return itemId === pId;
-                  })?.title ?? ""
-                );
-              }}
-              isOptionEqualToValue={(option, value) => {
-                const optionId = option?.id?.toString();
-                const valueId =
-                  typeof value === "object"
-                    ? value?.id?.toString()
-                    : value?.toString();
-                return value === undefined || optionId === valueId;
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={"Category"}
-                  margin="normal"
-                  variant="outlined"
-                  error={!!(errors as any)?.categories?.id}
-                  helperText={(errors as any)?.categories?.id?.message}
-                  required
-                />
-              )}
-            />
+            <FormControl fullWidth>
+              <InputLabel>Status</InputLabel>
+              <Select {...field} label="Status">
+                <MenuItem value="1. new">1. New</MenuItem>
+                <MenuItem value="2. contacted">2. Contacted</MenuItem>
+                <MenuItem value="3. engaged">3. Engaged</MenuItem>
+                <MenuItem value="4. interested">4. Interested</MenuItem>
+                <MenuItem value="5. salescall">5. Salescall</MenuItem>
+                <MenuItem value="6. qualified">6. Qualified</MenuItem>
+                <MenuItem value="7. negotitions">7. Negotitions</MenuItem>
+                <MenuItem value="8. signed">8. Signed</MenuItem>
+              </Select>
+            </FormControl>
           )}
         />
-        <Controller
-          name="status"
-          control={control}
-          render={({ field }) => {
-            return (
-              <Select
-                {...field}
-                value={field?.value || "draft"}
-                label={"Status"}
-              >
-                <MenuItem value="draft">Draft</MenuItem>
-                <MenuItem value="published">Published</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            );
-          }}
-        />
+        <TextField label="Notes" multiline {...register("notes")} />
       </Box>
-    </Create>
+    </Edit>
   );
 }
