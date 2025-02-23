@@ -5,17 +5,7 @@
   "theme_color":"#eeeeee",
   "background_color":"#cccccc",
   "display":"standalone",
-  "scope":[
-    "/forgot-password",
-    "/login",
-    "/calendar",
-    "/crm",
-    "/forge",
-    "/ledger",
-    "/profile",
-    "/prospects",
-    "/resource",
-            ],
+  "scope":"/",
   
   "start_url":"/profile",
   
