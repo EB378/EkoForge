@@ -5,8 +5,6 @@ import { useTranslations } from "next-intl";
 import NextImage from "next/image";
 import { RefineThemedLayoutV2HeaderProps } from "@refinedev/mui";
 import { useColorMode } from "@contexts/color-mode";
-import DarkModeOutlined from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
 
 // MUI components
 import Box from "@mui/material/Box";
@@ -33,7 +31,7 @@ interface NavbarProps extends RefineThemedLayoutV2HeaderProps {
 
 const Navbar: React.FC<NavbarProps> = ({ locale }) => {
   const t = useTranslations("NavbarLinks");
-  const { mode, setMode } = useColorMode();
+  const { mode } = useColorMode();
   const theme = getTheme(mode);
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const { push } = useNavigation();
@@ -64,6 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
       component="nav"
       sx={{
         width: "100%",
+        height: "10vh",
         background: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
         color: theme.palette.primary.contrastText,
         boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
@@ -85,8 +84,8 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
         >
           <NextImage
             src="/Logo.png" // Replace with your logo path
-            width={200}
-            height={40} // Adjust height to maintain proportions
+            width={150}
+            height={30} // Adjust height to maintain proportions
             alt="Southern Finland Aircraft Rentals"
           />
         </Box>
@@ -101,7 +100,7 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
                 sx={{
                   fontWeight: 500,
                   textTransform: "none",
-                  fontSize: "0.9rem",
+                  fontSize: "0.85rem",
                   color: theme.palette.primary.contrastText,
                   transition: "background-color 0.3s, color 0.3s",
                   "&:hover": {
@@ -113,33 +112,15 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
                 {link.label}
               </Button>
             ))}
-            <IconButton
-              color="inherit"
-              onClick={() => setMode()}
-              sx={{
-                ml: 1,
-                p: 1,
-                border: `1px solid ${theme.palette.primary.contrastText}`,
-                borderRadius: 1,
-              }}
-            >
-              {mode === "dark" ? (
-                <LightModeOutlined fontSize="small" />
-              ) : (
-                <DarkModeOutlined fontSize="small" />
-              )}
-            </IconButton>
             <Select
               value={currentLocale}
               onChange={handleLanguageChange}
               sx={{
                 borderRadius: 1,
-                fontSize: "0.9rem",
-                px: 1,
-                py: 0.5,
+                fontSize: "0.85rem",
+                
                 backgroundColor: theme.palette.primary.main,
                 color: theme.palette.primary.contrastText,
-                border: `1px solid ${theme.palette.secondary.main}`,
                 ".MuiSelect-icon": {
                   color: theme.palette.primary.contrastText,
                   fontSize: "1rem",
@@ -156,21 +137,6 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
         ) : (
           // Mobile Menu Toggle
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <IconButton
-              color="inherit"
-              onClick={() => setMode()}
-              sx={{
-                p: 1,
-                border: `1px solid ${theme.palette.primary.contrastText}`,
-                borderRadius: 1,
-              }}
-            >
-              {mode === "dark" ? (
-                <LightModeOutlined fontSize="small" />
-              ) : (
-                <DarkModeOutlined fontSize="small" />
-              )}
-            </IconButton>
             <IconButton
               edge="end"
               color="inherit"
