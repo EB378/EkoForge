@@ -5,30 +5,84 @@ import { RefineThemes } from "@refinedev/mui";
 // Extend MUI's palette to include the custom "strong" property.
 declare module "@mui/material/styles" {
   interface Palette {
+    thrid: {
+      main: string;
+      light: string;
+      dark: string;
+      contrastText: string;
+    };
+    fourth: {
+      main: string;
+      light: string;
+      dark: string;
+      contrastText: string;
+    };
+    fifth: {
+      main: string;
+      light: string;
+      dark: string;
+      contrastText: string;
+    };
     strong: {
       default: string;
     };
   }
   interface PaletteOptions {
+    thrid?: {
+      main?: string;
+      light?: string;
+      dark?: string;
+      contrastText?: string;
+    };
+    fourth?: {
+      main?: string;
+      light?: string;
+      dark?: string;
+      contrastText?: string;
+    };
+    fifth?: {
+      main?: string;
+      light?: string;
+      dark?: string;
+      contrastText?: string;
+    };
     strong?: {
       default?: string;
     };
   }
 }
 
-// Light theme using RefineThemes.Orange.
-export const lightTheme = createTheme(RefineThemes.Orange, {
+// Light theme using RefineThemes.Blue.
+export const lightTheme = createTheme(RefineThemes.Blue, {
   palette: {
     primary: {
-      main: "#C15925", // Orange main
-      light: "#CD7A51", // Orange light
-      dark: "#A83800",  // Orange dark
+      main: "#1B1F3B", // Blue main
+      light: "#2F3558", // Blue light
+      dark: "#0F1228",  // Blue dark
       contrastText: "#ffffff",
     },
     secondary: {
-      main: "#005b96", // A deep blue for light mode
-      light: "#337ab7",
-      dark: "#003f6e",
+      main: "#FF914D", // Orange main
+      light: "#FFB585",
+      dark: "#004953",
+      contrastText: "#000000",
+    },
+    thrid: {
+      main: "#005F6B", // Teal main
+      light: "#008592",
+      dark: "#004953",
+      contrastText: "#000000",
+    },
+    fourth: {
+      main: "#E5E5E5", // Grey main
+      light: "#F5F5F5",
+      dark: "#CFCFCF",
+      contrastText: "#000000",
+    },
+    fifth: {
+      main: "#3FAF7D", // Emerald main
+      light: "#60C89C",
+      dark: "#2E8F63",
       contrastText: "#000000",
     },
     error: {
@@ -61,19 +115,37 @@ export const lightTheme = createTheme(RefineThemes.Orange, {
   },
 });
 
-// Dark theme using RefineThemes.OrangeDark.
-export const darkTheme = createTheme(RefineThemes.OrangeDark, {
+// Dark theme using RefineThemes.BlueDark.
+export const darkTheme = createTheme(RefineThemes.BlueDark, {
   palette: {
     primary: {
-      main: "#C15925",
-      light: "#CD7A51",
-      dark: "#A83800",
+      main: "#1B1F3B",
+      light: "#2F3558",
+      dark: "#0F1228",
       contrastText: "#ffffff",
     },
     secondary: {
-      main: "#66b2ff", // A brighter blue tailored for dark mode
-      light: "#99ccff",
-      dark: "#3385ff",
+      main: "#FF914D", // Orange main
+      light: "#FFB585",
+      dark: "#004953",
+      contrastText: "#000000",
+    },
+    thrid: {
+      main: "#005F6B", // Teal main
+      light: "#008592",
+      dark: "#004953",
+      contrastText: "#000000",
+    },
+    fourth: {
+      main: "#E5E5E5", // Grey main
+      light: "#F5F5F5",
+      dark: "#CFCFCF",
+      contrastText: "#000000",
+    },
+    fifth: {
+      main: "#3FAF7D", // Emerald main
+      light: "#60C89C",
+      dark: "#2E8F63",
       contrastText: "#000000",
     },
     error: {
