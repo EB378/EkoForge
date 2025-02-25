@@ -18,8 +18,8 @@ import EmailIcon from "@mui/icons-material/Email";
 import BusinessIcon from "@mui/icons-material/Business";
 
 // Motion-enabled components
-const MotionBox = motion(Box);
-const MotionTypography = motion(Typography);
+const MotionBox = motion.create(Box);
+const MotionTypography = motion.create(Typography);
 
 const Contact = () => {
   const t = useTranslations("Contact");
