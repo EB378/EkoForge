@@ -6,12 +6,13 @@ import NextLink from "next/link";
 import NextImage from "next/image";
 import { motion } from "framer-motion";
 import { useColorMode } from "@contexts/color-mode";
+import { getTheme } from "@theme/theme";
 
 // MUI components
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { getTheme } from "@theme/theme";
+
 
 const Hero = () => {
   const t = useTranslations("HomePage");
@@ -35,7 +36,7 @@ const Hero = () => {
       sx={{
         position: "relative",
         width: "100%",
-        height: {xs:"50vh", sm:"30vh", md:"75vh"}, // Fixed hero height
+        height: {xs:"50vh", sm:"30vh", md:"90vh"}, // Fixed hero height
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         alignItems: "center",
@@ -55,12 +56,12 @@ const Hero = () => {
         }}
       >
         <NextImage
-          src="/aircraft-hero-background.jpg"
+          src="/hero-background.svg"
           alt="Hero Background"
           fill
           style={{
             objectFit: "cover",
-            filter: "blur(4px) brightness(0.5)",
+            filter: "brightness(0.65)",
           }}
         />
       </motion.div>
