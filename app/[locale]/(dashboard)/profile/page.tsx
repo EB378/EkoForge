@@ -252,7 +252,7 @@ export default function ProfilePage() {
                   <Box
                     sx={{
                       width: 100,
-                      height: 100,
+                      minHeight: 100,
                       borderRadius: "50%",
                       backgroundColor: "white",
                       display: "flex",

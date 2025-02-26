@@ -18,7 +18,7 @@ export default function License() {
     <>
       <Navbar />
       <Box
-        height="100vh"
+        minHeight="100vh"
         sx={{
           backgroundColor: theme.palette.background.default,
           p: 4,

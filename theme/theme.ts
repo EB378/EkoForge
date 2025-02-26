@@ -5,7 +5,7 @@ import { RefineThemes } from "@refinedev/mui";
 // Extend MUI's palette to include the custom "strong" property.
 declare module "@mui/material/styles" {
   interface Palette {
-    thrid: {
+    third: {
       main: string;
       light: string;
       dark: string;
@@ -25,6 +25,8 @@ declare module "@mui/material/styles" {
     };
     strong: {
       default: string;
+      black: string;
+      white: string;
     };
   }
   interface PaletteOptions {
@@ -48,6 +50,8 @@ declare module "@mui/material/styles" {
     };
     strong?: {
       default?: string;
+      black: string;
+      white: string;
     };
   }
 }
@@ -67,7 +71,7 @@ export const lightTheme = createTheme(RefineThemes.Blue, {
       dark: "#004953",
       contrastText: "#000000",
     },
-    thrid: {
+    third: {
       main: "#005F6B", // Teal main
       light: "#008592",
       dark: "#004953",
@@ -111,6 +115,8 @@ export const lightTheme = createTheme(RefineThemes.Blue, {
     },
     strong: {
       default: "#ffffff",
+      black: "#000000",
+      white: "#ffffff",
     },
   },
 });
@@ -130,7 +136,7 @@ export const darkTheme = createTheme(RefineThemes.BlueDark, {
       dark: "#004953",
       contrastText: "#000000",
     },
-    thrid: {
+    third: {
       main: "#005F6B", // Teal main
       light: "#008592",
       dark: "#004953",
@@ -174,6 +180,8 @@ export const darkTheme = createTheme(RefineThemes.BlueDark, {
     },
     strong: {
       default: "#000000",
+      black: "#000000",
+      white: "#ffffff",
     },
   },
 });

@@ -36,12 +36,13 @@ const Hero = () => {
       sx={{
         position: "relative",
         width: "100%",
-        height: {xs:"50vh", sm:"30vh", md:"90vh"}, // Fixed hero height
+        minHeight: {xs:"50vh", sm:"30vh", md:"92vh"}, // Fixed hero height
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         alignItems: "center",
         justifyContent: "space-between",
         overflow: "hidden",
+        background: theme.palette.strong.black,
       }}
     >
       {/* Background Image */}
@@ -52,7 +53,7 @@ const Hero = () => {
         style={{
           position: "absolute",
           inset: 0,
-          backgroundColor: theme.palette.background.default,
+          backgroundColor: theme.palette.strong.black,
         }}
       >
         <NextImage
@@ -62,6 +63,7 @@ const Hero = () => {
           style={{
             objectFit: "cover",
             filter: "brightness(0.65)",
+            opacity: 0.5,
           }}
         />
       </motion.div>
@@ -77,15 +79,16 @@ const Hero = () => {
           justifyContent: "space-between",
           width: "100%",
           px: { md: 5 },
-          height: "100%",
+          minHeight: "100%",
         }}
       >
         {/* Hero Text */}
         <Box
           sx={{
-            maxWidth: { xs: "90%", md: "60%" },
+            maxWidth: { xs: "90%", md: "40%" },
             textAlign: "left",
             my: { xs: 4, md: 0 },
+            pl: { xs: 0, md: 7 },
           }}
         >
           <motion.div
@@ -98,14 +101,14 @@ const Hero = () => {
               variant="h2"
               component="h1"
               sx={{
-                color: "#fff",
+                color: theme.palette.fourth.light,
                 fontWeight: "bold",
-                fontSize: { xs: "1.8rem", sm: "2.5rem", md: "3.5rem", lg: "4rem" },
+                fontSize: { xs: "1.8rem", sm: "2.5rem", md: "5rem", lg: "6rem" },
                 lineHeight: 1.2,
-                textShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                textShadow: "-3px 2px 10px rgba(255, 255, 255, 0.41)",
               }}
             >
-              {t("HeroTitle")}
+              {t("simple")}<br/>{t("elegant")}<br/>{t("effective")}
             </Typography>
           </motion.div>
           <motion.div
@@ -131,10 +134,11 @@ const Hero = () => {
 
         {/* CTA Section */}
         <Box
+          
           sx={{
+            display: "none",
             width: { xs: "100%", md: "30%" },
-            height: {md: "100%"},
-            display: "flex",
+            minHeight: {md: "100%"},
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -162,7 +166,7 @@ const Hero = () => {
                 sx={{
                   px: 3,
                   py: 1,
-                  bgcolor: "secondary.main",
+                  bgcolor: theme.palette.third.main,
                   color: "#fff",
                   fontWeight: "bold",
                   borderRadius: "50px",
@@ -198,14 +202,14 @@ const Hero = () => {
             sx={{
               display: { xs: "none", md: "block" },
               width: "100%",
-              height: "100%", // Fill the CTA container's height (75vh)
+              minHeight: "100%", // Fill the CTA container's height (75vh)
               position: "relative",
             }}
           >
             <Box
               sx={{
                 width: "100%",
-                height: "100%",
+                minHeight: "100%",
                 background: `linear-gradient(to top, ${theme.palette.primary.dark}, ${theme.palette.primary.light})`,
                 transform: "skewX(-20deg)",
                 overflow: "hidden",
@@ -218,7 +222,7 @@ const Hero = () => {
                   top: 0,
                   left: 0,
                   width: "100%",
-                  height: "100%",
+                  minHeight: "100%",
                   transform: "skewX(20deg)",
                   display: "flex",
                   flexDirection: "column",
@@ -240,7 +244,7 @@ const Hero = () => {
                     sx={{
                       px: { xs: 3, md: 4 },
                       py: { xs: 1, md: 2 },
-                      bgcolor: "secondary.main",
+                      bgcolor: theme.palette.third.main,
                       color: "#fff",
                       fontWeight: "bold",
                       borderRadius: "50px",
@@ -258,7 +262,7 @@ const Hero = () => {
                         borderRadius: "50px",
                         border: "2px solid transparent",
                         transition: "border-color 0.3s",
-                        "&:hover": { borderColor: "secondary.main" },
+                        "&:hover": { borderColor: theme.palette.secondary.main },
                       }}
                     />
                     {t("CTA")}

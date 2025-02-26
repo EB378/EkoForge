@@ -62,8 +62,11 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
       component="nav"
       sx={{
         width: "100%",
-        height: "10vh",
-        background: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+        position: "sticky",
+        top: 0,
+        zIndex: 10000,
+        minHeight: {md:"8vh"},
+        background: theme.palette.primary.dark,
         color: theme.palette.primary.contrastText,
         boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
       }}
@@ -74,7 +77,6 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
           maxWidth: 1200,
           mx: "auto",
           px: 2,
-          py: 1,
         }}
       >
         {/* Logo */}
