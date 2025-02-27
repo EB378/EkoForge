@@ -177,20 +177,20 @@ export default function IndexPage() {
                   variant="h4"
                   sx={{
                     fontWeight: "bold",
-                    mb: 1,
+                    mb: 6,
                     fontSize: { xs: "1.25rem", sm: "1.5rem", md: "2rem" },
                   }}
                 >
-                  {t("Start Your Adventure Today")}
+                  {t("Call-To-Action")}
                 </Typography>
                 <Typography
                   variant="h6"
                   sx={{
-                    mb: 3,
+                    mb: 8,
                     fontSize: { xs: "0.75rem", sm: "1rem", md: "1.25rem" },
                   }}
                 >
-                  {t("Discover the freedom of flight")}
+                  {t("Call-To-Action-Sub")}
                 </Typography>
                 <NextLink href={`/${locale}/profile`} passHref>
                   <motion.div whileHover={{ scale: 1.15 }}>

@@ -12,6 +12,8 @@ import { getTheme } from "@theme/theme";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import DoubleArrowSharpIcon from '@mui/icons-material/DoubleArrowSharp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 
 const Hero = () => {
@@ -69,228 +71,109 @@ const Hero = () => {
       </motion.div>
 
       {/* Content Container */}
-      <Box
-        sx={{
-          position: "relative",
-          zIndex: 10,
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          px: { md: 5 },
-          minHeight: "100%",
-        }}
-      >
-        {/* Hero Text */}
+      <Box sx={{ display: "flex", flexDirection: "column"}}>
         <Box
           sx={{
-            maxWidth: { xs: "90%", md: "40%" },
-            textAlign: "left",
-            my: { xs: 4, md: 0 },
-            pl: { xs: 0, md: 7 },
-          }}
-        >
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={textSlideIn}
-          >
-            <Typography
-              variant="h2"
-              component="h1"
-              sx={{
-                color: theme.palette.fourth.light,
-                fontWeight: "bold",
-                fontSize: { xs: "1.8rem", sm: "2.5rem", md: "5rem", lg: "6rem" },
-                lineHeight: 1.2,
-                textShadow: "-3px 2px 10px rgba(255, 255, 255, 0.41)",
-              }}
-            >
-              {t("simple")}<br/>{t("elegant")}<br/>{t("effective")}
-            </Typography>
-          </motion.div>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={textSlideIn}
-            transition={{ delay: 0.3 }}
-          >
-            <Typography
-              variant="subtitle1"
-              sx={{
-                color: "#fff",
-                mt: 2,
-                fontSize: { xs: "1rem", md: "1.25rem" },
-                textShadow: "0 1px 3px rgba(0,0,0,0.6)",
-              }}
-            >
-              {t("HeroSubTitle")}
-            </Typography>
-          </motion.div>
-        </Box>
-
-        {/* CTA Section */}
-        <Box
-          
-          sx={{
-            display: "none",
-            width: { xs: "100%", md: "30%" },
-            minHeight: {md: "100%"},
+            position: "relative",
+            zIndex: 10,
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            px: { md: 5 },
+            minHeight: "100%",
           }}
         >
-          {/* Mobile CTA */}
+          {/* Hero Text */}
           <Box
             sx={{
-              display: { xs: "flex", md: "none" },
-              width: "100%",
-              background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-              p: 2,
-              alignItems: "baseline",
-              justifyContent: "space-around",
+              maxWidth: { xs: "90%", md: "50%" },
+              textAlign: "left",
+              my: { xs: 4, md: 0 },
+              pl: { xs: 0, md: 7 },
             }}
           >
-            <NextLink href={`https://calendly.com/ekoforge`} passHref>
-              <Button
-                component={motion.button}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                variant="contained"
-                sx={{
-                  px: 3,
-                  py: 1,
-                  bgcolor: theme.palette.third.main,
-                  color: "#fff",
-                  fontWeight: "bold",
-                  borderRadius: "50px",
-                  boxShadow: 3,
-                }}
-              >
-                {t("CTA")}
-              </Button>
-            </NextLink>
-            <NextLink href="#contact" passHref>
-              <Button
-                component={motion.button}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.95 }}
-                variant="outlined"
-                sx={{
-                  px: 3,
-                  py: 1,
-                  color: "#fff",
-                  fontWeight: "bold",
-                  borderRadius: "50px",
-                  boxShadow: 3,
-                  borderColor: "#fff",
-                }}
-              >
-                {t("Contact Us")}
-              </Button>
-            </NextLink>
-          </Box>
-
-          {/* Desktop CTA: Diagonal Banner */}
-          <Box
-            sx={{
-              display: { xs: "none", md: "block" },
-              width: "100%",
-              minHeight: "100%", // Fill the CTA container's height (75vh)
-              position: "relative",
-            }}
-          >
-            <Box
-              sx={{
-                width: "100%",
-                minHeight: "100%",
-                background: `linear-gradient(to top, ${theme.palette.primary.dark}, ${theme.palette.primary.light})`,
-                transform: "skewX(-20deg)",
-                overflow: "hidden",
-                position: "relative",
-              }}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={textSlideIn}
             >
-              <Box
+              <Typography
+                variant="h2"
+                component="h1"
                 sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  minHeight: "100%",
-                  transform: "skewX(20deg)",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: { xs: 1, md: 2, lg: 3 },
-                  zIndex: 1,
+                  color: theme.palette.fourth.light,
+                  fontWeight: "bold",
+                  fontSize: { xs: "1.8rem", sm: "2.5rem", md: "5rem", lg: "6rem" },
+                  lineHeight: 1.2,
+                  textShadow: "-3px 2px 10px rgba(255, 255, 255, 0.41)",
                 }}
               >
-                <NextLink href={`https://calendly.com/ekoforge`} passHref>
-                  <Button
-                    component={motion.button}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6 }}
-                    variant="contained"
+                {t("simple")}<br/>{t("elegant")}<br/>{t("effective")}
+              </Typography>
+            </motion.div>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={textSlideIn}
+              transition={{ delay: 0.3 }}
+            >
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  color: "#fff",
+                  mt: 2,
+                  fontSize: { xs: "1rem", md: "1.25rem" },
+                  textShadow: "0 1px 3px rgba(0,0,0,0.6)",
+                }}
+              >
+                {t("HeroSubTitle")}
+              </Typography>
+              {/* CTA Section */}
+              <NextLink href={`https://calendly.com/ekoforge`} passHref>
+                <Button
+                  component={motion.button}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6 }}
+                  variant="contained"
+                  sx={{
+                    px: { xs: 3, md: 3 },
+                    py: { xs: 1, md: 2 },
+                    mt: 2,
+                    bgcolor: theme.palette.third.main,
+                    color: "#fff",
+                    fontWeight: "bold",
+                    boxShadow: 3,
+                    border: "2px solid transparent",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <Box
+                    component="span"
                     sx={{
-                      px: { xs: 3, md: 4 },
-                      py: { xs: 1, md: 2 },
-                      bgcolor: theme.palette.third.main,
-                      color: "#fff",
-                      fontWeight: "bold",
-                      borderRadius: "50px",
-                      boxShadow: 3,
+                      position: "absolute",
+                      inset: 0,
                       border: "2px solid transparent",
-                      position: "relative",
-                      overflow: "hidden",
+                      transition: "border-color 0.3s",
+                      "&:hover": { borderColor: theme.palette.secondary.main },
                     }}
-                  >
-                    <Box
-                      component="span"
-                      sx={{
-                        position: "absolute",
-                        inset: 0,
-                        borderRadius: "50px",
-                        border: "2px solid transparent",
-                        transition: "border-color 0.3s",
-                        "&:hover": { borderColor: theme.palette.secondary.main },
-                      }}
-                    />
-                    {t("CTA")}
-                  </Button>
-                </NextLink>
-                <NextLink href="#contact" passHref>
-                  <Button
-                    component={motion.button}
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.95 }}
-                    variant="outlined"
-                    sx={{
-                      px: { xs: 3, md: 4 },
-                      py: { xs: 1, md: 2 },
-                      borderColor: "#fff",
-                      color: "#fff",
-                      fontWeight: "bold",
-                      borderRadius: "50px",
-                      boxShadow: 3,
-                      zIndex: 2,
-                    }}
-                  >
-                    {t("Contact Us")}
-                  </Button>
-                </NextLink>
-              </Box>
-            </Box>
+                  />
+                  {t("CTA")}
+                  <DoubleArrowSharpIcon sx={{ ml: 1, scale: 1.5 }} />
+                </Button>
+              </NextLink>
+            </motion.div>
           </Box>
+        </Box>
+        <Box sx={{ position: "absolute", bottom: -15, left: "50%", transform: "translateX(-50%)" }}>
+          <KeyboardArrowDownIcon sx={{ color: "#fff", fontSize: "3rem" }}/>
         </Box>
       </Box>
     </Box>

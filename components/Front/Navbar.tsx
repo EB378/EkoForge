@@ -53,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
   const navLinks = [
     { label: t("navLink1"), href: `/${currentLocale}/#testimonials` },
     { label: t("navLink2"), href: `/${currentLocale}/#contact` },
-    { label: t("navLink3"), href: `/${currentLocale}/web` },
+   /// { label: t("navLink3"), href: `/${currentLocale}/web` },
     { label: t("navLink4"), href: `https://calendly.com/ekoforge` },
   ];
 
