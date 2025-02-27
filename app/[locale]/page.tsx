@@ -46,7 +46,7 @@ export default function IndexPage() {
       icon: <AddBusinessIcon />,
       title: t("StepOne"),
       detail: t("StepOneText"),
-      gradient: `linear-gradient(to top, ${theme.palette.secondary.dark}, ${theme.palette.primary.light})`,
+      gradient: `linear-gradient(to top, ${theme.palette.third.main}, ${theme.palette.primary.light})`,
     },
     {
       icon: <LanguageIcon />,

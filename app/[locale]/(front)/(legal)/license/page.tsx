@@ -1,17 +1,14 @@
 "use client";
 
 import React from "react";
-import { useLocale, useTranslations } from "next-intl";
 import { getTheme } from "@theme/theme";
 import { useColorMode } from "@contexts/color-mode";
-import { Typography, Button, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import Navbar from "@components/Front/Navbar";
 import Footer from "@components/Front/Footer";
 
 export default function License() {
-  const t = useTranslations("homepage"); // adjust namespace if needed
-  const locale = useLocale();
-  const { mode, setMode } = useColorMode();
+  const { mode } = useColorMode();
   const theme = getTheme(mode);
 
   return (
@@ -29,7 +26,7 @@ export default function License() {
           MIT License
         </Typography>
         <Typography variant="body1" paragraph>
-          Copyright (c)̧ {new Date().getFullYear()} ̧EkoForge OY
+          Copyright (c), {new Date().getFullYear()}, EkoForge OY
         </Typography>
         <Typography variant="body1" paragraph>
           Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useLocale, useTranslations } from "next-intl";
 import { getTheme } from "@theme/theme";
 import { useColorMode } from "@contexts/color-mode";
 import { Typography, Button, Box } from "@mui/material";
@@ -9,9 +8,8 @@ import Navbar from "@components/Front/Navbar";
 import Footer from "@components/Front/Footer";
 
 export default function Terms() {
-  const t = useTranslations("homepage"); // Adjust namespace if necessary
-  const locale = useLocale();
-  const { mode, setMode } = useColorMode();
+  
+  const { mode } = useColorMode();
   const theme = getTheme(mode);
 
   return (
@@ -62,7 +60,7 @@ export default function Terms() {
           Governing Law
         </Typography>
         <Typography variant="body1" paragraph>
-          These terms shall be governed and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.
+          These terms shall be governed and construed in accordance with the laws of the EU, without regard to its conflict of law provisions.
         </Typography>
       </Box>
       <Footer />

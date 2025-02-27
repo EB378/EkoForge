@@ -16,6 +16,7 @@ import Link from "@mui/material/Link";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import BusinessIcon from "@mui/icons-material/Business";
+import { useNotification } from "@refinedev/core";
 
 // Motion-enabled components
 const MotionBox = motion.create(Box);
@@ -24,6 +25,7 @@ const MotionTypography = motion.create(Typography);
 const Contact = () => {
   const t = useTranslations("Contact");
   const theme = useTheme();
+  const { open } = useNotification();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,10 +49,21 @@ const Contact = () => {
 
       const result = await response.json();
       if (result.success) {
-        alert("Thank you for your submission!");
+        open?.({
+          type: "success",
+          message: "Thank you for your message!",
+          description: "We will get back to you as soon as possible.",
+        });
+        alert("Thank you for your message! We will get back to you as soon as possible.");
         form.reset();
       } else {
+        open?.({
+          type: "error",
+          message: "Submission failed.",
+          description: "Please try again. Or call us.",
+        });
         alert("Submission failed. Please try again.");
+        
       }
     } catch (error) {
       alert("An error occurred. Please try again.");
@@ -65,7 +78,7 @@ const Contact = () => {
         position: "relative",
         py: 12,
         px: 4,
-        background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${theme.palette.primary.dark})`,
+        background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${theme.palette.primary.main})`,
         color: theme.palette.text.primary,
       }}
     >
@@ -239,7 +252,7 @@ const Contact = () => {
                 sx={{
                   fontWeight: "bold",
                   color: theme.palette.warning.contrastText,
-                  fontSize: "1rem",
+                  fontSize: "1.25rem",
                 }}
               >
                 {t("contact information")}

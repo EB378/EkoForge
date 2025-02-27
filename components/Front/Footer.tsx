@@ -28,7 +28,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.primary.dark,
         color: theme.palette.common.white,
         width: "100%",
       }}
@@ -95,7 +95,7 @@ const Footer = () => {
               <Box component="li" sx={{ mb: 1 }}>
                 <Link
                   component={NextLink}
-                  href={`/${locale}/web`}
+                  href={`/${locale}/profile`}
                   underline="hover"
                   sx={{ color: theme.palette.info.contrastText }}
                 >
@@ -224,7 +224,7 @@ const Footer = () => {
             color: theme.palette.info.contrastText,
           }}
         >
-          © {currentYear} Wing Aviators {t("rights")}
+          © {currentYear} EkoForge Oy {t("rights")}
           <Box component="span" sx={{ ml: 2 }}>
             <IconButton
               color="inherit"
