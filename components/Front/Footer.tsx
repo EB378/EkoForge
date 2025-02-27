@@ -43,7 +43,7 @@ const Footer = () => {
             <Box sx={{ mb: 2 }}>
               <Link component={NextLink} href={`/${locale}/`} underline="none">
                 <NextImage
-                  src="/Logo.png" // Replace with your aircraft rental logo
+                  src="/Logo.svg" // Replace with your aircraft rental logo
                   alt="Logo"
                   width={250}
                   height={50}
@@ -114,7 +114,7 @@ const Footer = () => {
               <Box component="li" sx={{ mb: 1 }}>
                 <Link
                   component={NextLink}
-                  href="https://www.instagram.com/eko._forge/"
+                  href="https://www.instagram.com/eko_.forge/"
                   underline="hover"
                   sx={{ color: theme.palette.info.contrastText }}
                 >
@@ -124,7 +124,7 @@ const Footer = () => {
               <Box component="li" sx={{ mb: 1 }}>
                 <Link
                   component={NextLink}
-                  href="https://www.facebook.com/eko._forge"
+                  href="https://www.facebook.com/eko_.forge"
                   underline="hover"
                   sx={{ color: theme.palette.info.contrastText }}
                 >

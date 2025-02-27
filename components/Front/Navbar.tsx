@@ -85,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
           onClick={() => push(`/${currentLocale}/`)}
         >
           <NextImage
-            src="/Logo.png" // Replace with your logo path
+            src="/Logo.svg" // Replace with your logo path
             width={150}
             height={30} // Adjust height to maintain proportions
             alt="Southern Finland Aircraft Rentals"

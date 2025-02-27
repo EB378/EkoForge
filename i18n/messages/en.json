@@ -3,14 +3,7 @@
     "navLink1": "What Do Our Clients Say About Us",
     "navLink2": "Contact",
     "navLink3": "Web Examples",
-    "navLink4": "Book a Meeting",
-    
-    "bookings": "Bookings",
-    "members": "Book a Meeting",
-    "logbook": "Logbook",
-    "noticeboard": "Noticeboard",
-    "profile": "Profile",
-    "settings": "Settings"
+    "navLink4": "Book a Meeting"
   },
   "HomePage": {
     "simple": "Simple.",
@@ -21,7 +14,6 @@
     "Contact Us": "Contact Us",
 
     "disrupt": "So, How Exactly Does This Work?",
-    "loosing clients": "Than a DIY Website",
     "StepOne": "Step 1: Select A Brand For Your Business",
     "StepTwo": "Step 2: Get Yourself A Effective Website",
     "StepThree": "Step 3: Get Infront Of Your Customers With Powerful SEO",
@@ -64,45 +56,6 @@
     "license": "License Agreement",
     "rights": "All rights reserved."
   },
-  "Profile": {
-    "profileUpdate": "Update Profile",
-    "username": "Username",
-    "fullname": "Full Name",
-    "email": "Email",
-    "phone": "Phone",
-    "address": "Address",
-    "city": "City",
-    "zip": "Zip",
-    "country": "Country",
-    "role": "Role",
-    "qualifications": "Qualifications",
-    "save": "Save",
-    "Total Hours on Plane": "Total Hours on Plane",
-    "resource": "Aircraft",
-    "total_hours": "Total Hours"
-  },
-  "Logbook": {
-    "logbook": "Logbook",
-    "resource": "Aircraft",
-    "date": "Date",
-    "PIC": "PIC",
-    "peopleonboard": "PAX",
-    "departure": "Departure",
-    "arrival": "Arrival",
-    "offblock": "offblock",
-    "takeoff": "Takeoff",
-    "landing": "Landing",
-    "onblock": "onblock",
-    "landings": "Landings",
-    "flightrules": "Flight Rules",
-    "night": "Night",
-    "ir": "IR",
-    "fuel": "Fuel Remaining",
-    "flight_type": "Flight Type",
-    "details": "Details",
-    "options": "Options",
-    "billing_details": "Billing details"
-  },
   "AboutBusiness": {
     "title": "Why Your Business Needs More Than Just a Website—It Needs a Sales-Generating Machine",
     "introParagraph1": "In today’s digital world, your website isn’t just an online brochure—it’s your business’s most powerful sales tool. Yet, too many business owners settle for generic, do-it-yourself website builders that leave them frustrated and stuck with a site that looks nice but doesn’t actually bring in customers.",
@@ -131,7 +84,12 @@
     "finalCallText": "A bad website is costing you sales every single day. Don't let another customer slip away. Invest in a high-converting website today and watch your business soar.",
     "bookNow": "Book Now"
   },
-  "crm":{
-    "title":"Testimonials"
+
+  "Profile": {
+    "username": "Username",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "role": "Role"
   }
 }

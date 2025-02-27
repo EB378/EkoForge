@@ -1,16 +1,17 @@
 "use client";
 
 import React from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import NextLink from "next/link";
 import { motion } from "framer-motion";
-import { Box, Container, Grid, Typography, Button } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, Container, Typography, Button } from "@mui/material";
+import { useColorMode } from "@contexts/color-mode";
+import { getTheme } from "@theme/theme";
 
 const AboutBusinessPage: React.FC = () => {
   const t = useTranslations("AboutBusiness");
-  const locale = useLocale();
-  const theme = useTheme();
+  const { mode } = useColorMode();
+    const theme = getTheme(mode);
 
   // Animation variants for Framer Motion.
   const fadeInUp = {
@@ -113,7 +114,7 @@ const AboutBusinessPage: React.FC = () => {
           {t("finalCallText")}
         </Typography>
 
-        <NextLink href={`/${locale}/book`} passHref>
+        <NextLink href={`https://calendly.com/ekoforge`} passHref>
           <motion.div whileHover={{ scale: 1.05 }}>
             <Button
               variant="contained"

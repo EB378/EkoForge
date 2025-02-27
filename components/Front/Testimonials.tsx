@@ -113,7 +113,6 @@ interface CarouselProps {
 
 const TestimonialCarousel: React.FC<CarouselProps> = ({ items, TestimonialCardBG }) => {
   const t = useTranslations("Testimonials");
-  const locale = useLocale();
   const { mode } = useColorMode();
   const theme = getTheme(mode);
   const [current, setCurrent] = useState(0);
