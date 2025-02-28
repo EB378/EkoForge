@@ -293,7 +293,7 @@ const Contact = () => {
                 >
                   <EmailIcon sx={{ color: theme.palette.warning.main, fontSize: 24 }} />
                   <Link
-                    href="mailto:Air.rentals@gmail.com"
+                    href="mailto:ekoforge@gmail.com"
                     underline="none"
                     sx={{
                       fontSize: "0.875rem",
