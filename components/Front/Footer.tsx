@@ -28,7 +28,7 @@ const Footer = () => {
     <Box
       component="footer"
       sx={{
-        backgroundColor: theme.palette.primary.dark,
+        backgroundColor: theme.palette.strong.nav,
         color: theme.palette.common.white,
         width: "100%",
       }}

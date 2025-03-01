@@ -32,7 +32,7 @@ import {
   useDelete,
 } from "@refinedev/core";
 import { useTranslations } from "next-intl";
-import { EditButton } from "@refinedev/mui";
+import { EditButton, MarkdownField } from "@refinedev/mui";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -479,7 +479,7 @@ export default function ProfilePage() {
                         <ListItem
                           key={note.id}
                           secondaryAction={
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                               <IconButton
                                 edge="end"
                                 aria-label="modify"
@@ -487,9 +487,9 @@ export default function ProfilePage() {
                               >
                                 <EditIcon />
                               </IconButton>
-                              <FormControl size="small" variant="outlined">
+                              <FormControl size="small">
                                 <Select
-                                  value={note.section}
+                                  value={""}
                                   onChange={(e) =>
                                     changeNoteSection(note.id, e.target.value as string)
                                   }
@@ -511,10 +511,11 @@ export default function ProfilePage() {
                             </Box>
                           }
                         >
-                          <ListItemText
-                            primary={note.note}
-                            sx={{ whiteSpace: "normal", wordWrap: "break-word", mr: 7 }}
-                          />
+                          <Box sx={{ whiteSpace: "normal", wordWrap: "break-word", mr: 7 }}>
+                            <MarkdownField
+                              value={note.note}
+                            />
+                          </Box>
                         </ListItem>
                       ))}
                     </List>
@@ -523,35 +524,6 @@ export default function ProfilePage() {
                       No matching notes available.
                     </Typography>
                   )}
-                  {/* Section Management Panel */}
-                  <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6">Manage Sections</Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
-                      <TextField
-                        label="New Section"
-                        value={newSectionName}
-                        onChange={(e) => setNewSectionName(e.target.value)}
-                      />
-                      <Button variant="contained" sx={{ ml: 2 }} onClick={addNewSection}>
-                        Add Section
-                      </Button>
-                    </Box>
-                    {sectionsData?.data.map((section: Section) => (
-                      <Box key={section.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                        <Typography sx={{ flexGrow: 1 }}>{section.name}</Typography>
-                        {(section.name.toLowerCase() !== "active" &&
-                          section.name.toLowerCase() !== "daily" &&
-                          section.name.toLowerCase() !== "archived") && (
-                          <Button
-                            color="error"
-                            onClick={() => handleDeleteSection(section.id, section.name)}
-                          >
-                            Delete
-                          </Button>
-                        )}
-                      </Box>
-                    ))}
-                  </Box>
                 </CardContent>
               </Card>
             </Grid>
@@ -613,9 +585,9 @@ export default function ProfilePage() {
                           >
                             <EditIcon />
                           </IconButton>
-                          <FormControl size="small" variant="outlined">
+                          <FormControl size="small">
                             <Select
-                              value={task.section}
+                              value={""}
                               onChange={(e) =>
                                 changeTaskSection(task.id, e.target.value as string)
                               }
@@ -656,35 +628,39 @@ export default function ProfilePage() {
                   No matching tasks available.
                 </Typography>
               )}
+            </CardContent>
+          </Card>
+          <Card sx={{ boxShadow: 3, borderRadius: 2, margin: "auto", mt: 4 }}>
+            <CardContent>
               {/* Section Management Panel */}
-              <Box sx={{ mt: 4 }}>
-                <Typography variant="h6">Manage Sections</Typography>
-                <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
-                  <TextField
-                    label="New Section"
-                    value={newSectionName}
-                    onChange={(e) => setNewSectionName(e.target.value)}
-                  />
-                  <Button variant="contained" sx={{ ml: 2 }} onClick={addNewSection}>
-                    Add Section
-                  </Button>
-                </Box>
-                {sectionsData?.data.map((section: Section) => (
-                  <Box key={section.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    <Typography sx={{ flexGrow: 1 }}>{section.name}</Typography>
-                    {(section.name.toLowerCase() !== "active" &&
-                      section.name.toLowerCase() !== "daily" &&
-                      section.name.toLowerCase() !== "archived") && (
-                      <Button
-                        color="error"
-                        onClick={() => handleDeleteSection(section.id, section.name)}
-                      >
-                        Delete
+              <Box>
+                    <Typography variant="h6">Manage Sections</Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
+                      <TextField
+                        label="New Section"
+                        value={newSectionName}
+                        onChange={(e) => setNewSectionName(e.target.value)}
+                      />
+                      <Button variant="contained" sx={{ ml: 2 }} onClick={addNewSection}>
+                        Add Section
                       </Button>
-                    )}
+                    </Box>
+                    {sectionsData?.data.map((section: Section) => (
+                      <Box key={section.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                        <Typography sx={{ flexGrow: 1 }}>{section.name}</Typography>
+                        {(section.name.toLowerCase() !== "active" &&
+                          section.name.toLowerCase() !== "daily" &&
+                          section.name.toLowerCase() !== "archived") && (
+                          <Button
+                            color="error"
+                            onClick={() => handleDeleteSection(section.id, section.name)}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </Box>
+                    ))}
                   </Box>
-                ))}
-              </Box>
             </CardContent>
           </Card>
         </Grid>

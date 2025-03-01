@@ -66,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
         top: 0,
         zIndex: 10000,
         minHeight: {md:"8vh"},
-        background: theme.palette.primary.dark,
+        background: theme.palette.strong.nav,
         color: theme.palette.primary.contrastText,
         boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
       }}

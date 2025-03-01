@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -14,6 +14,93 @@ import { useLocale, useTranslations } from "next-intl";
 import { getTheme } from "@theme/theme";
 import { useColorMode } from "@contexts/color-mode";
 import { LineChart } from "@mui/x-charts/LineChart";
+
+// Constants for the VerseOfTheDay
+const API_KEY = "061ee58bc62b257d8f1fc4a32716d9bb"; // Replace with your API key from API.Bible.
+const BIBLE_ID = "de4e12af7f28f599-01"; // Example Bible ID.
+const VERSES: string[] = [
+  "JER.29.11",
+  "PSA.23.6",
+  "1COR.4.4-8",
+  "PHP.4.13",
+  "JHN.3.16",
+  "ROM.8.28",
+  "ISA.41.10",
+  "PSA.46.1",
+  "GAL.5.22-23",
+  "HEB.11.1",
+  "2TI.1.7",
+  "1COR.10.13",
+  "PRO.22.6",
+  "ISA.40.31",
+  "JOS.1.9",
+  "HEB.12.2",
+  "MAT.11.28",
+  "ROM.10.9-10",
+  "PHP.2.3-4",
+  "MAT.5.43-44",
+];
+
+function VerseOfTheDay() {
+  const [verseRef, setVerseRef] = useState("");
+  const [verseContent, setVerseContent] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // Use the day of the month modulo the length of VERSES to keep the same verse for the day.
+  const verseIndex = new Date().getDate() % VERSES.length;
+  const verseID = VERSES[verseIndex];
+
+  useEffect(() => {
+    async function fetchVerse() {
+      try {
+        const response = await fetch(
+          `https://api.scripture.api.bible/v1/bibles/${BIBLE_ID}/search?query=${verseID}`,
+          {
+            headers: {
+              "api-key": API_KEY,
+            },
+          }
+        );
+        const json = await response.json();
+        // Optionally, if FUMS is loaded, pass the fumsId.
+        if (
+          typeof window !== "undefined" &&
+          (window as any)._BAPI &&
+          (window as any)._BAPI.t
+        ) {
+          (window as any)._BAPI.t(json.meta.fumsId);
+        }
+        const passage = json.data.passages[0];
+        setVerseRef(passage.reference);
+        setVerseContent(passage.content);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching verse:", error);
+        setVerseContent("Error fetching verse.");
+        setLoading(false);
+      }
+    }
+    fetchVerse();
+  }, [verseID]);
+
+  return (
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        Verse of the Day
+      </Typography>
+      {loading ? (
+        <Typography>Loading verse...</Typography>
+      ) : (
+        <>
+          <Typography variant="subtitle1" sx={{ fontStyle: "italic", mb: 1 }}>
+            {verseRef}
+          </Typography>
+          <div dangerouslySetInnerHTML={{ __html: verseContent }} />
+        </>
+      )}
+    </Box>
+  );
+}
 
 const salesData = [
   { month: "Jan", sales: 4000 },
@@ -33,15 +120,13 @@ const salesData = [
 export default function ForgeDashboard() {
   const t = useTranslations("hompage");
   const locale = useLocale();
-  const { mode, setMode } = useColorMode();
+  const { mode } = useColorMode();
   const theme = getTheme(mode);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
-      {/* Header */}
-
-      {/* Action Buttons */}
+      {/* Header / Action Buttons */}
       <Stack
         direction={isSmallScreen ? "column" : "row"}
         spacing={2}
@@ -51,10 +136,16 @@ export default function ForgeDashboard() {
         <Typography variant="h4" gutterBottom>
           Dashboard
         </Typography>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.primary.dark }}>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.primary.main }}
+        >
           Onboard New Client
         </Button>
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.secondary.dark }}>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: theme.palette.third.main }}
+        >
           Add New Transaction
         </Button>
         <Button variant="outlined" color="primary">
@@ -72,21 +163,21 @@ export default function ForgeDashboard() {
             </Typography>
             <Box sx={{ height: 300 }}>
               <LineChart
-                dataset={salesData} // Add this line
+                dataset={salesData}
                 series={[
                   {
                     id: "sales",
                     label: "Sales",
-                    data: salesData.map((item) => item.sales), // array of sales numbers
-                    dataKey: "sales", // property to extract y-values
-                    color: theme.palette.primary.main,
+                    data: salesData.map((item) => item.sales),
+                    dataKey: "sales",
+                    color: theme.palette.fifth.main,
                   },
                 ]}
                 xAxis={[
                   {
                     id: "x-axis-0",
                     scaleType: "band",
-                    dataKey: "month", // property to extract x-values
+                    dataKey: "month",
                   },
                 ]}
                 tooltip={{}}
@@ -95,26 +186,16 @@ export default function ForgeDashboard() {
           </Paper>
         </Grid>
 
-        {/* Noticeboard */}
+        {/* Replace Noticeboard with Verse of the Day */}
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 2, height: "100%", backgroundColor: theme.palette.strong.default }}>
-            <Typography variant="h6" gutterBottom>
-              Noticeboard
-            </Typography>
-            <Stack spacing={1}>
-              <Typography variant="body2">
-                - System maintenance at 10 PM.
-              </Typography>
-              <Typography variant="body2">
-                - New client onboarded: Company X.
-              </Typography>
-              <Typography variant="body2">
-                - Quarterly meeting scheduled.
-              </Typography>
-              <Typography variant="body2">
-                - Server update completed.
-              </Typography>
-            </Stack>
+          <Paper
+            sx={{
+              p: 2,
+              height: "100%",
+              backgroundColor: theme.palette.strong.default,
+            }}
+          >
+            <VerseOfTheDay />
           </Paper>
         </Grid>
 

@@ -50,8 +50,10 @@ declare module "@mui/material/styles" {
     };
     strong?: {
       default?: string;
+      opposite?: string;
       black: string;
       white: string;
+      nav?: string;
     };
   }
 }
@@ -114,9 +116,11 @@ export const lightTheme = createTheme(RefineThemes.Blue, {
       contrastText: "#ffffff",
     },
     strong: {
-      default: "#000000",
+      default: "#ffffff",
+      opposite: "#000000",
       black: "#000000",
       white: "#ffffff",
+      nav: "#0F1228",
     },
   },
   components: {
@@ -189,8 +193,10 @@ export const darkTheme = createTheme(RefineThemes.BlueDark, {
     },
     strong: {
       default: "#000000",
+      opposite: "#ffffff",
       black: "#000000",
       white: "#ffffff",
+      nav: "#0F1228",
     },
   },
   components: {
