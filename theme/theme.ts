@@ -25,8 +25,10 @@ declare module "@mui/material/styles" {
     };
     strong: {
       default: string;
+      opposite: string;
       black: string;
       white: string;
+      nav: string;
     };
   }
   interface PaletteOptions {
