@@ -121,7 +121,7 @@ const Navbar: React.FC<NavbarProps> = ({ locale }) => {
                 borderRadius: 1,
                 fontSize: "0.85rem",
                 
-                backgroundColor: theme.palette.primary.main,
+                backgroundColor: theme.palette.primary.dark,
                 color: theme.palette.primary.contrastText,
                 ".MuiSelect-icon": {
                   color: theme.palette.primary.contrastText,

@@ -87,7 +87,7 @@ export default function IndexPage() {
               top: 0,
             }}
           >
-            <Box sx={{ backgroundColor: theme.palette.primary.main }}>
+            <Box sx={{ backgroundColor: theme.palette.primary.dark }}>
             {/* Hero Section */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}

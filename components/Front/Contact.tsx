@@ -78,7 +78,7 @@ const Contact = () => {
         position: "relative",
         py: 12,
         px: 4,
-        background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${theme.palette.primary.main})`,
+        background: `linear-gradient(to bottom, ${theme.palette.background.default}, ${theme.palette.primary.dark})`,
         color: theme.palette.text.primary,
       }}
     >
