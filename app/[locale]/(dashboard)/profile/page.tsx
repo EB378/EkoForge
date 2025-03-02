@@ -85,32 +85,19 @@ export default function ProfilePage() {
   // Hook for updating the profile.
   const { mutate: updateProfile } = useUpdate<ProfileData>();
 
-  // Local state for tasks and notes.
+  // Local state for tasks, notes, and sections.
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [newTask, setNewTask] = React.useState("");
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [newNote, setNewNote] = React.useState("");
-
-  // State for section filters.
   const [taskFilter, setTaskFilter] = React.useState<string>("");
   const [noteFilter, setNoteFilter] = React.useState<string>("");
-
-  // State for adding a new section.
   const [newSectionName, setNewSectionName] = React.useState("");
 
-  if (!userId) {
-    return <Typography>Loading...</Typography>;
-  }
-  if (isLoading || !data?.data) {
-    return <Typography>Loading profile...</Typography>;
-  }
-  if (isError) {
-    return <Typography>Error loading profile</Typography>;
-  }
-
-  const profile = data.data;
+  // Always call hooks. Later, we conditionally render based on the state.
+  const profile = data?.data;
   // Extract sections from the profile.
-  const profileSections: Section[] = profile.sections || [];
+  const profileSections: Section[] = profile?.sections || [];
 
   // Initialize tasks and notes when the profile loads.
   React.useEffect(() => {
@@ -141,7 +128,6 @@ export default function ProfilePage() {
         setTaskFilter(activeSection.id);
         setNoteFilter(activeSection.id);
       } else {
-        // Fallback to the first section.
         setTaskFilter(profileSections[0].id);
         setNoteFilter(profileSections[0].id);
       }
@@ -163,7 +149,7 @@ export default function ProfilePage() {
     setNewTask("");
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { tasks: updatedTasks },
     });
   };
@@ -175,7 +161,7 @@ export default function ProfilePage() {
     setTasks(updatedTasks);
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { tasks: updatedTasks },
     });
   };
@@ -191,7 +177,7 @@ export default function ProfilePage() {
     setTasks(updatedTasks);
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { tasks: updatedTasks },
     });
   };
@@ -203,7 +189,7 @@ export default function ProfilePage() {
     setTasks(updatedTasks);
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { tasks: updatedTasks },
     });
   };
@@ -213,7 +199,7 @@ export default function ProfilePage() {
     setTasks(updatedTasks);
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { tasks: updatedTasks },
     });
   };
@@ -232,7 +218,7 @@ export default function ProfilePage() {
     setNewNote("");
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { notes: updatedNotes },
     });
   };
@@ -248,7 +234,7 @@ export default function ProfilePage() {
     setNotes(updatedNotes);
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { notes: updatedNotes },
     });
   };
@@ -260,7 +246,7 @@ export default function ProfilePage() {
     setNotes(updatedNotes);
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { notes: updatedNotes },
     });
   };
@@ -270,7 +256,7 @@ export default function ProfilePage() {
     setNotes(updatedNotes);
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { notes: updatedNotes },
     });
   };
@@ -288,7 +274,7 @@ export default function ProfilePage() {
     const updatedSections = [...profileSections, newSection];
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { sections: updatedSections },
     });
     setNewSectionName("");
@@ -318,7 +304,7 @@ export default function ProfilePage() {
       setTasks(updatedTasks);
       updateProfile({
         resource: "profiles",
-        id: profile.id,
+        id: profile?.id || "",
         values: { tasks: updatedTasks },
       });
 
@@ -328,13 +314,13 @@ export default function ProfilePage() {
       setNotes(updatedNotes);
       updateProfile({
         resource: "profiles",
-        id: profile.id,
+        id: profile?.id || "",
         values: { notes: updatedNotes },
       });
     }
     updateProfile({
       resource: "profiles",
-      id: profile.id,
+      id: profile?.id || "",
       values: { sections: updatedSections },
     });
   };
@@ -345,353 +331,376 @@ export default function ProfilePage() {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4" sx={{ mb: 4 }}>
-        Profile
-      </Typography>
-      <Grid container spacing={4}>
-        {/* Left Column: Profile Card and Personal Notes */}
-        <Grid item xs={12} md={6}>
-          <Grid container spacing={4}>
-            {/* Profile Card */}
-            <Grid item xs={12}>
-              <Card sx={{ margin: "auto", boxShadow: 3, borderRadius: 2 }}>
-                <CardMedia
-                  component="div"
-                  sx={{
-                    height: 200,
-                    backgroundColor: "primary.main",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Box
+      {!userId && <Typography>Loading...</Typography>}
+      {isLoading && <Typography>Loading profile...</Typography>}
+      {isError && <Typography>Error loading profile</Typography>}
+      {userId && profile && !isLoading && !isError && (
+        <Grid container spacing={4}>
+          {/* Left Column: Profile Card and Personal Notes */}
+          <Grid item xs={12} md={6}>
+            <Grid container spacing={4}>
+              {/* Profile Card */}
+              <Grid item xs={12}>
+                <Card sx={{ margin: "auto", boxShadow: 3, borderRadius: 2 }}>
+                  <CardMedia
+                    component="div"
                     sx={{
-                      width: 100,
-                      minHeight: 100,
-                      borderRadius: "50%",
-                      backgroundColor: "white",
+                      height: 200,
+                      backgroundColor: "primary.main",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      overflow: "hidden",
                     }}
                   >
-                    {profile.avatar ? (
-                      <img
-                        src={profile.avatar}
-                        alt="Profile"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
+                    <Box
+                      sx={{
+                        width: 100,
+                        minHeight: 100,
+                        borderRadius: "50%",
+                        backgroundColor: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {profile.avatar ? (
+                        <img
+                          src={profile.avatar}
+                          alt="Profile"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <Typography variant="h4" color="primary">
+                          {profile.fullname
+                            ? profile.fullname.charAt(0).toUpperCase()
+                            : "?"}
+                        </Typography>
+                      )}
+                    </Box>
+                  </CardMedia>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5">
+                      {profile.fullname || "No Name"}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t("email")}: {profile.email}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t("username")}: {profile.username}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t("phone")}: {profile.phone}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t("address")}: {profile.streetaddress}, {profile.city},{" "}
+                      {profile.country} {profile.zip}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {t("role")}: {profile.role}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <EditButton hideText recordItemId={profile.id} />
+                  </CardActions>
+                </Card>
+              </Grid>
+
+              {/* Personal Notes Card */}
+              <Grid item xs={12}>
+                <Card sx={{ boxShadow: 3, borderRadius: 2, margin: "auto" }}>
+                  <CardContent>
+                    <Typography variant="h5" gutterBottom>
+                      Personal Notes
+                    </Typography>
+                    <Box
+                      sx={{ display: "flex", mb: 2, alignItems: "center" }}
+                    >
+                      <TextField
+                        fullWidth
+                        multiline
+                        label="New Note"
+                        variant="outlined"
+                        value={newNote}
+                        onChange={(e) => setNewNote(e.target.value)}
                       />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ ml: 2 }}
+                        onClick={addNote}
+                      >
+                        Add
+                      </Button>
+                    </Box>
+                    <Box sx={{ mb: 2, minWidth: 120 }}>
+                      <FormControl fullWidth>
+                        <InputLabel id="notes-filter-label">View</InputLabel>
+                        <Select
+                          labelId="notes-filter-label"
+                          value={noteFilter}
+                          label="View"
+                          onChange={(e) =>
+                            setNoteFilter(e.target.value as string)
+                          }
+                        >
+                          {profileSections.map((section: Section) => (
+                            <MenuItem key={section.id} value={section.id}>
+                              {section.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+                    {filteredNotes.length > 0 ? (
+                      <List>
+                        {filteredNotes.map((note) => (
+                          <ListItem
+                            key={note.id}
+                            secondaryAction={
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 2,
+                                }}
+                              >
+                                <IconButton
+                                  edge="end"
+                                  aria-label="modify"
+                                  onClick={() => modifyNote(note.id)}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                                <FormControl size="small">
+                                  <Select
+                                    value={""}
+                                    onChange={(e) =>
+                                      changeNoteSection(
+                                        note.id,
+                                        e.target.value as string
+                                      )
+                                    }
+                                  >
+                                    {profileSections.map((section: Section) => (
+                                      <MenuItem
+                                        key={section.id}
+                                        value={section.id}
+                                      >
+                                        {section.name}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                                <IconButton
+                                  edge="end"
+                                  aria-label="delete"
+                                  onClick={() => deleteNote(note.id)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Box>
+                            }
+                          >
+                            <Box
+                              sx={{
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                                mr: 7,
+                              }}
+                            >
+                              <MarkdownField value={note.note} />
+                            </Box>
+                          </ListItem>
+                        ))}
+                      </List>
                     ) : (
-                      <Typography variant="h4" color="primary">
-                        {profile.fullname
-                          ? profile.fullname.charAt(0).toUpperCase()
-                          : "?"}
+                      <Typography variant="body2" color="text.secondary">
+                        No matching notes available.
                       </Typography>
                     )}
-                  </Box>
-                </CardMedia>
-                <CardContent>
-                  <Typography gutterBottom variant="h5">
-                    {profile.fullname || "No Name"}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("email")}: {profile.email}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("username")}: {profile.username}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("phone")}: {profile.phone}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("address")}: {profile.streetaddress}, {profile.city},{" "}
-                    {profile.country} {profile.zip}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("role")}: {profile.role}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <EditButton hideText recordItemId={profile.id} />
-                </CardActions>
-              </Card>
+                  </CardContent>
+                </Card>
+              </Grid>
             </Grid>
+          </Grid>
 
-            {/* Personal Notes Card */}
-            <Grid item xs={12}>
-              <Card sx={{ boxShadow: 3, borderRadius: 2, margin: "auto" }}>
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
-                    Personal Notes
+          {/* Right Column: Todo List and Section Management */}
+          <Grid item xs={12} md={6}>
+            <Card
+              sx={{
+                boxShadow: 3,
+                borderRadius: 2,
+                maxWidth: 450,
+                margin: "auto",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h5" gutterBottom>
+                  Todo List
+                </Typography>
+                <Box sx={{ display: "flex", mb: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="New Task"
+                    variant="outlined"
+                    value={newTask}
+                    onChange={(e) => setNewTask(e.target.value)}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ ml: 2 }}
+                    onClick={addTask}
+                  >
+                    Add
+                  </Button>
+                </Box>
+                <Box sx={{ mb: 2, minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="tasks-filter-label">View</InputLabel>
+                    <Select
+                      labelId="tasks-filter-label"
+                      value={taskFilter}
+                      label="View"
+                      onChange={(e) =>
+                        setTaskFilter(e.target.value as string)
+                      }
+                    >
+                      {profileSections.map((section: Section) => (
+                        <MenuItem key={section.id} value={section.id}>
+                          {section.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+                {filteredTasks.length > 0 ? (
+                  <List>
+                    {filteredTasks.map((task) => (
+                      <ListItem
+                        key={task.id}
+                        secondaryAction={
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            <IconButton
+                              edge="end"
+                              aria-label="modify"
+                              onClick={() => modifyTask(task.id)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <FormControl size="small">
+                              <Select
+                                value={""}
+                                onChange={(e) =>
+                                  changeTaskSection(
+                                    task.id,
+                                    e.target.value as string
+                                  )
+                                }
+                              >
+                                {profileSections.map((section: Section) => (
+                                  <MenuItem
+                                    key={section.id}
+                                    value={section.id}
+                                  >
+                                    {section.name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <IconButton
+                              edge="end"
+                              aria-label="delete"
+                              onClick={() => deleteTask(task.id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                        }
+                      >
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            checked={task.completed}
+                            onChange={() => toggleTask(task.id)}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={task.task}
+                          sx={{
+                            whiteSpace: "normal",
+                            wordWrap: "break-word",
+                            mr: 7,
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No matching tasks available.
                   </Typography>
-                  <Box sx={{ display: "flex", mb: 2, alignItems: "center" }}>
+                )}
+              </CardContent>
+            </Card>
+            <Card sx={{ boxShadow: 3, borderRadius: 2, margin: "auto", mt: 4 }}>
+              <CardContent>
+                {/* Section Management Panel */}
+                <Box>
+                  <Typography variant="h6">Manage Sections</Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
                     <TextField
-                      fullWidth
-                      multiline
-                      label="New Note"
-                      variant="outlined"
-                      value={newNote}
-                      onChange={(e) => setNewNote(e.target.value)}
+                      label="New Section"
+                      value={newSectionName}
+                      onChange={(e) => setNewSectionName(e.target.value)}
                     />
                     <Button
                       variant="contained"
-                      color="primary"
                       sx={{ ml: 2 }}
-                      onClick={addNote}
+                      onClick={addNewSection}
                     >
-                      Add
+                      Add Section
                     </Button>
                   </Box>
-                  <Box sx={{ mb: 2, minWidth: 120 }}>
-                    <FormControl fullWidth>
-                      <InputLabel id="notes-filter-label">View</InputLabel>
-                      <Select
-                        labelId="notes-filter-label"
-                        value={noteFilter}
-                        label="View"
-                        onChange={(e) =>
-                          setNoteFilter(e.target.value as string)
-                        }
-                      >
-                        {profileSections.map((section: Section) => (
-                          <MenuItem key={section.id} value={section.id}>
-                            {section.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                  {filteredNotes.length > 0 ? (
-                    <List>
-                      {filteredNotes.map((note) => (
-                        <ListItem
-                          key={note.id}
-                          secondaryAction={
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 2,
-                              }}
-                            >
-                              <IconButton
-                                edge="end"
-                                aria-label="modify"
-                                onClick={() => modifyNote(note.id)}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                              <FormControl size="small">
-                                <Select
-                                  value={""}
-                                  onChange={(e) =>
-                                    changeNoteSection(
-                                      note.id,
-                                      e.target.value as string
-                                    )
-                                  }
-                                >
-                                  {profileSections.map((section: Section) => (
-                                    <MenuItem key={section.id} value={section.id}>
-                                      {section.name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                              <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() => deleteNote(note.id)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Box>
+                  {profileSections.map((section: Section) => (
+                    <Box
+                      key={section.id}
+                      sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                    >
+                      <Typography sx={{ flexGrow: 1 }}>
+                        {section.name}
+                      </Typography>
+                      {(section.name.toLowerCase() !== "active" &&
+                        section.name.toLowerCase() !== "daily" &&
+                        section.name.toLowerCase() !== "archived") && (
+                        <Button
+                          color="error"
+                          onClick={() =>
+                            handleDeleteSection(section.id, section.name)
                           }
                         >
-                          <Box
-                            sx={{
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
-                              mr: 7,
-                            }}
-                          >
-                            <MarkdownField value={note.note} />
-                          </Box>
-                        </ListItem>
-                      ))}
-                    </List>
-                  ) : (
-                    <Typography variant="body2" color="text.secondary">
-                      No matching notes available.
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
+                          Delete
+                        </Button>
+                      )}
+                    </Box>
+                  ))}
+                </Box>
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
-
-        {/* Right Column: Todo List and Section Management */}
-        <Grid item xs={12} md={6}>
-          <Card
-            sx={{ boxShadow: 3, borderRadius: 2, maxWidth: 450, margin: "auto" }}
-          >
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                Todo List
-              </Typography>
-              <Box sx={{ display: "flex", mb: 2 }}>
-                <TextField
-                  fullWidth
-                  label="New Task"
-                  variant="outlined"
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ ml: 2 }}
-                  onClick={addTask}
-                >
-                  Add
-                </Button>
-              </Box>
-              <Box sx={{ mb: 2, minWidth: 120 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="tasks-filter-label">View</InputLabel>
-                  <Select
-                    labelId="tasks-filter-label"
-                    value={taskFilter}
-                    label="View"
-                    onChange={(e) => setTaskFilter(e.target.value as string)}
-                  >
-                    {profileSections.map((section: Section) => (
-                      <MenuItem key={section.id} value={section.id}>
-                        {section.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-              {filteredTasks.length > 0 ? (
-                <List>
-                  {filteredTasks.map((task) => (
-                    <ListItem
-                      key={task.id}
-                      secondaryAction={
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                          }}
-                        >
-                          <IconButton
-                            edge="end"
-                            aria-label="modify"
-                            onClick={() => modifyTask(task.id)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <FormControl size="small">
-                            <Select
-                              value={""}
-                              onChange={(e) =>
-                                changeTaskSection(
-                                  task.id,
-                                  e.target.value as string
-                                )
-                              }
-                            >
-                              {profileSections.map((section: Section) => (
-                                <MenuItem key={section.id} value={section.id}>
-                                  {section.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          <IconButton
-                            edge="end"
-                            aria-label="delete"
-                            onClick={() => deleteTask(task.id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Box>
-                      }
-                    >
-                      <ListItemIcon>
-                        <Checkbox
-                          edge="start"
-                          checked={task.completed}
-                          onChange={() => toggleTask(task.id)}
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={task.task}
-                        sx={{
-                          whiteSpace: "normal",
-                          wordWrap: "break-word",
-                          mr: 7,
-                        }}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <Typography variant="body2" color="text.secondary">
-                  No matching tasks available.
-                </Typography>
-              )}
-            </CardContent>
-          </Card>
-          <Card sx={{ boxShadow: 3, borderRadius: 2, margin: "auto", mt: 4 }}>
-            <CardContent>
-              {/* Section Management Panel */}
-              <Box>
-                <Typography variant="h6">Manage Sections</Typography>
-                <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
-                  <TextField
-                    label="New Section"
-                    value={newSectionName}
-                    onChange={(e) => setNewSectionName(e.target.value)}
-                  />
-                  <Button variant="contained" sx={{ ml: 2 }} onClick={addNewSection}>
-                    Add Section
-                  </Button>
-                </Box>
-                {profileSections.map((section: Section) => (
-                  <Box
-                    key={section.id}
-                    sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                  >
-                    <Typography sx={{ flexGrow: 1 }}>{section.name}</Typography>
-                    {(section.name.toLowerCase() !== "active" &&
-                      section.name.toLowerCase() !== "daily" &&
-                      section.name.toLowerCase() !== "archived") && (
-                      <Button
-                        color="error"
-                        onClick={() =>
-                          handleDeleteSection(section.id, section.name)
-                        }
-                      >
-                        Delete
-                      </Button>
-                    )}
-                  </Box>
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      )}
     </Box>
   );
 }
