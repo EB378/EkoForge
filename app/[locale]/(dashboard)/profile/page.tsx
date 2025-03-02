@@ -67,7 +67,7 @@ interface ProfileData {
   tasks?: Task[];
   notes?: Note[];
   // Custom (personalized) sections stored on the profile.
-  // Note: Default sections ("all" and "active") are managed in the UI.
+  // Note: Default sections ("all", "active", "archived") are managed in the UI.
   sections?: Section[];
 }
 
@@ -144,7 +144,7 @@ export default function ProfilePage() {
     if (newTask.trim() === "") return;
     const nextId = tasks.length ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
     // If the current filter is "all", default new tasks to the "active" section.
-    const effectiveSection = taskFilter === "all" ? "active" ? "archived" : taskFilter;
+    const effectiveSection = taskFilter === "all" ? "active" : taskFilter;
     const newTaskItem: Task = {
       id: nextId,
       task: newTask.trim(),
@@ -215,7 +215,7 @@ export default function ProfilePage() {
   const addNote = () => {
     if (newNote.trim() === "") return;
     const nextId = notes.length ? Math.max(...notes.map((n) => n.id)) + 1 : 1;
-    const effectiveSection = noteFilter === "all" ? "active" ? "archived" : noteFilter;
+    const effectiveSection = noteFilter === "all" ? "active" : noteFilter;
     const newNoteItem: Note = {
       id: nextId,
       note: newNote.trim(),
@@ -291,12 +291,12 @@ export default function ProfilePage() {
 
   const handleDeleteSection = (id: string, name: string) => {
     // Prevent deletion of default sections.
-    if (id === "all" || id === "active" || id === "archived" ) return;
+    if (id === "all" || id === "active" || id === "archived") return;
 
     const updatedCustomSections = customSections.filter(
       (section) => section.id !== id
     );
-    // Optionally, reassign tasks and notes from the deleted section to "active"
+    // Optionally, reassign tasks and notes from the deleted section to default values.
     const updatedTasks = tasks.map((task) =>
       task.section === id ? { ...task, section: "archived" } : task
     );
@@ -679,7 +679,7 @@ export default function ProfilePage() {
                         {section.name}
                       </Typography>
                       {section.id !== "all" &&
-                        section.id !== "active" && 
+                        section.id !== "active" &&
                         section.id !== "archived" && (
                           <Button
                             color="error"
