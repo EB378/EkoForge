@@ -366,6 +366,3 @@ export default function ForgeDashboard() {
     </Box>
   );
 }
-
-// Export the complete grouped verses array for use elsewhere.
-export { GROUPED_VERSES };
