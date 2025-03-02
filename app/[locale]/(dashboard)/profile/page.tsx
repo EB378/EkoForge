@@ -42,7 +42,7 @@ interface Task {
   id: number;
   task: string;
   completed: boolean;
-  // Stores the ID of the section (from the profile.sections)
+  // Stores the ID of the section (from the profile.sections or default sections)
   section: string;
 }
 
@@ -66,7 +66,9 @@ interface ProfileData {
   role: string;
   tasks?: Task[];
   notes?: Note[];
-  sections?: Section[]; // Personalized sections stored on the profile
+  // Custom (personalized) sections stored on the profile.
+  // Note: Default sections ("all" and "active") are managed in the UI.
+  sections?: Section[];
 }
 
 export default function ProfilePage() {
@@ -90,14 +92,33 @@ export default function ProfilePage() {
   const [newTask, setNewTask] = React.useState("");
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [newNote, setNewNote] = React.useState("");
-  const [taskFilter, setTaskFilter] = React.useState<string>("");
-  const [noteFilter, setNoteFilter] = React.useState<string>("");
+
+  // Default filters: "all" shows every task/note; if adding a new item while in "all", it will default to "active".
+  const [taskFilter, setTaskFilter] = React.useState<string>("all");
+  const [noteFilter, setNoteFilter] = React.useState<string>("all");
+
+  // State for adding a new custom section.
   const [newSectionName, setNewSectionName] = React.useState("");
 
   // Always call hooks. Later, we conditionally render based on the state.
   const profile = data?.data;
-  // Extract sections from the profile.
-  const profileSections: Section[] = profile?.sections || [];
+  // The personalized sections stored on the profile.
+  const customSections: Section[] = profile?.sections || [];
+
+  // Define default sections that always exist.
+  const defaultSections: Section[] = [
+    { id: "all", name: "All" },
+    { id: "active", name: "Active" },
+    { id: "archived", name: "Archived" },
+  ];
+
+  // Merge default sections with custom sections (avoid duplicates).
+  const availableSections: Section[] = React.useMemo(() => {
+    const custom = customSections.filter(
+      (sec) => sec.id !== "active" && sec.id !== "all" && sec.id !== "archived"
+    );
+    return [...defaultSections, ...custom];
+  }, [customSections]);
 
   // Initialize tasks and notes when the profile loads.
   React.useEffect(() => {
@@ -118,31 +139,17 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
-  // Set default filter values based on available sections.
-  React.useEffect(() => {
-    if (profileSections.length > 0) {
-      const activeSection = profileSections.find(
-        (section) => section.name.toLowerCase() === "active"
-      );
-      if (activeSection) {
-        setTaskFilter(activeSection.id);
-        setNoteFilter(activeSection.id);
-      } else {
-        setTaskFilter(profileSections[0].id);
-        setNoteFilter(profileSections[0].id);
-      }
-    }
-  }, [profileSections]);
-
   // === TASK FUNCTIONS ===
   const addTask = () => {
     if (newTask.trim() === "") return;
     const nextId = tasks.length ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
+    // If the current filter is "all", default new tasks to the "active" section.
+    const effectiveSection = taskFilter === "all" ? "active" ? "archived" : taskFilter;
     const newTaskItem: Task = {
       id: nextId,
       task: newTask.trim(),
       completed: false,
-      section: taskFilter,
+      section: effectiveSection,
     };
     const updatedTasks = [...tasks, newTaskItem];
     setTasks(updatedTasks);
@@ -208,10 +215,11 @@ export default function ProfilePage() {
   const addNote = () => {
     if (newNote.trim() === "") return;
     const nextId = notes.length ? Math.max(...notes.map((n) => n.id)) + 1 : 1;
+    const effectiveSection = noteFilter === "all" ? "active" ? "archived" : noteFilter;
     const newNoteItem: Note = {
       id: nextId,
       note: newNote.trim(),
-      section: noteFilter,
+      section: effectiveSection,
     };
     const updatedNotes = [...notes, newNoteItem];
     setNotes(updatedNotes);
@@ -261,7 +269,7 @@ export default function ProfilePage() {
     });
   };
 
-  // Helper function to generate a unique id for sections.
+  // Helper function to generate a unique id for custom sections.
   const generateUniqueId = () => Math.random().toString(36).substr(2, 9);
 
   // === SECTION MANAGEMENT FUNCTIONS ===
@@ -271,68 +279,61 @@ export default function ProfilePage() {
       id: generateUniqueId(),
       name: newSectionName.trim(),
     };
-    const updatedSections = [...profileSections, newSection];
+    // Append the new custom section.
+    const updatedCustomSections = [...customSections, newSection];
     updateProfile({
       resource: "profiles",
       id: profile?.id || "",
-      values: { sections: updatedSections },
+      values: { sections: updatedCustomSections },
     });
     setNewSectionName("");
   };
 
   const handleDeleteSection = (id: string, name: string) => {
     // Prevent deletion of default sections.
-    if (
-      name.toLowerCase() === "active" ||
-      name.toLowerCase() === "archived" ||
-      name.toLowerCase() === "daily"
-    )
-      return;
+    if (id === "all" || id === "active" || id === "archived" ) return;
 
-    const updatedSections = profileSections.filter(
+    const updatedCustomSections = customSections.filter(
       (section) => section.id !== id
     );
-
-    // Optionally reassign tasks and notes from the deleted section to "active"
-    const activeSection = profileSections.find(
-      (section) => section.name.toLowerCase() === "active"
+    // Optionally, reassign tasks and notes from the deleted section to "active"
+    const updatedTasks = tasks.map((task) =>
+      task.section === id ? { ...task, section: "archived" } : task
     );
-    if (activeSection) {
-      const updatedTasks = tasks.map((task) =>
-        task.section === id ? { ...task, section: activeSection.id } : task
-      );
-      setTasks(updatedTasks);
-      updateProfile({
-        resource: "profiles",
-        id: profile?.id || "",
-        values: { tasks: updatedTasks },
-      });
-
-      const updatedNotes = notes.map((note) =>
-        note.section === id ? { ...note, section: activeSection.id } : note
-      );
-      setNotes(updatedNotes);
-      updateProfile({
-        resource: "profiles",
-        id: profile?.id || "",
-        values: { notes: updatedNotes },
-      });
-    }
+    setTasks(updatedTasks);
     updateProfile({
       resource: "profiles",
       id: profile?.id || "",
-      values: { sections: updatedSections },
+      values: { tasks: updatedTasks },
+    });
+
+    const updatedNotes = notes.map((note) =>
+      note.section === id ? { ...note, section: "active" } : note
+    );
+    setNotes(updatedNotes);
+    updateProfile({
+      resource: "profiles",
+      id: profile?.id || "",
+      values: { notes: updatedNotes },
+    });
+
+    updateProfile({
+      resource: "profiles",
+      id: profile?.id || "",
+      values: { sections: updatedCustomSections },
     });
   };
 
-  // Filter tasks and notes by the selected section.
-  const filteredTasks = tasks.filter((t) => t.section === taskFilter);
-  const filteredNotes = notes.filter((n) => n.section === noteFilter);
+  // Filter tasks and notes based on the selected filter.
+  // If "all" is selected, show every item.
+  const filteredTasks =
+    taskFilter === "all" ? tasks : tasks.filter((t) => t.section === taskFilter);
+  const filteredNotes =
+    noteFilter === "all" ? notes : notes.filter((n) => n.section === noteFilter);
 
   return (
     <Box sx={{ p: 4 }}>
-      {!userId && <Typography>Loading...</Typography>}
-      {isLoading && <Typography>Loading profile...</Typography>}
+      {(!userId || isLoading) && <Typography>Loading profile...</Typography>}
       {isError && <Typography>Error loading profile</Typography>}
       {userId && profile && !isLoading && !isError && (
         <Grid container spacing={4}>
@@ -417,9 +418,7 @@ export default function ProfilePage() {
                     <Typography variant="h5" gutterBottom>
                       Personal Notes
                     </Typography>
-                    <Box
-                      sx={{ display: "flex", mb: 2, alignItems: "center" }}
-                    >
+                    <Box sx={{ display: "flex", mb: 2, alignItems: "center" }}>
                       <TextField
                         fullWidth
                         multiline
@@ -448,7 +447,7 @@ export default function ProfilePage() {
                             setNoteFilter(e.target.value as string)
                           }
                         >
-                          {profileSections.map((section: Section) => (
+                          {availableSections.map((section: Section) => (
                             <MenuItem key={section.id} value={section.id}>
                               {section.name}
                             </MenuItem>
@@ -486,7 +485,7 @@ export default function ProfilePage() {
                                       )
                                     }
                                   >
-                                    {profileSections.map((section: Section) => (
+                                    {availableSections.map((section: Section) => (
                                       <MenuItem
                                         key={section.id}
                                         value={section.id}
@@ -567,11 +566,9 @@ export default function ProfilePage() {
                       labelId="tasks-filter-label"
                       value={taskFilter}
                       label="View"
-                      onChange={(e) =>
-                        setTaskFilter(e.target.value as string)
-                      }
+                      onChange={(e) => setTaskFilter(e.target.value as string)}
                     >
-                      {profileSections.map((section: Section) => (
+                      {availableSections.map((section: Section) => (
                         <MenuItem key={section.id} value={section.id}>
                           {section.name}
                         </MenuItem>
@@ -609,7 +606,7 @@ export default function ProfilePage() {
                                   )
                                 }
                               >
-                                {profileSections.map((section: Section) => (
+                                {availableSections.map((section: Section) => (
                                   <MenuItem
                                     key={section.id}
                                     value={section.id}
@@ -673,7 +670,7 @@ export default function ProfilePage() {
                       Add Section
                     </Button>
                   </Box>
-                  {profileSections.map((section: Section) => (
+                  {availableSections.map((section: Section) => (
                     <Box
                       key={section.id}
                       sx={{ display: "flex", alignItems: "center", mb: 1 }}
@@ -681,18 +678,18 @@ export default function ProfilePage() {
                       <Typography sx={{ flexGrow: 1 }}>
                         {section.name}
                       </Typography>
-                      {(section.name.toLowerCase() !== "active" &&
-                        section.name.toLowerCase() !== "daily" &&
-                        section.name.toLowerCase() !== "archived") && (
-                        <Button
-                          color="error"
-                          onClick={() =>
-                            handleDeleteSection(section.id, section.name)
-                          }
-                        >
-                          Delete
-                        </Button>
-                      )}
+                      {section.id !== "all" &&
+                        section.id !== "active" && 
+                        section.id !== "archived" && (
+                          <Button
+                            color="error"
+                            onClick={() =>
+                              handleDeleteSection(section.id, section.name)
+                            }
+                          >
+                            Delete
+                          </Button>
+                        )}
                     </Box>
                   ))}
                 </Box>
