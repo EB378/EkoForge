@@ -27,9 +27,6 @@ import {
   useOne,
   useUpdate,
   HttpError,
-  useList,
-  useCreate,
-  useDelete,
 } from "@refinedev/core";
 import { useTranslations } from "next-intl";
 import { EditButton, MarkdownField } from "@refinedev/mui";
@@ -45,7 +42,7 @@ interface Task {
   id: number;
   task: string;
   completed: boolean;
-  // Now stores the UUID of the section (from the sections table)
+  // Stores the ID of the section (from the profile.sections)
   section: string;
 }
 
@@ -69,6 +66,7 @@ interface ProfileData {
   role: string;
   tasks?: Task[];
   notes?: Note[];
+  sections?: Section[]; // Personalized sections stored on the profile
 }
 
 export default function ProfilePage() {
@@ -84,7 +82,7 @@ export default function ProfilePage() {
     meta: { select: "*" },
   });
 
-  // Use refine's update hook for the profile.
+  // Hook for updating the profile.
   const { mutate: updateProfile } = useUpdate<ProfileData>();
 
   // Local state for tasks and notes.
@@ -93,61 +91,12 @@ export default function ProfilePage() {
   const [notes, setNotes] = React.useState<Note[]>([]);
   const [newNote, setNewNote] = React.useState("");
 
-  // State for the section filters (for tasks and notes store the section ID).
+  // State for section filters.
   const [taskFilter, setTaskFilter] = React.useState<string>("");
   const [noteFilter, setNoteFilter] = React.useState<string>("");
 
   // State for adding a new section.
   const [newSectionName, setNewSectionName] = React.useState("");
-
-  // Fetch sections from the "sections" table.
-  const {
-    data: sectionsData,
-    isLoading: sectionsLoading,
-    refetch: refetchSections,
-  } = useList<Section>({
-    resource: "sections",
-  });
-
-  // Hooks for creating and deleting sections.
-  const { mutate: createSection } = useCreate();
-  const { mutate: deleteSection } = useDelete();
-
-  // When profile data loads, initialize tasks/notes.
-  React.useEffect(() => {
-    if (data?.data) {
-      setTasks(
-        data.data.tasks?.map((task) => ({
-          ...task,
-          // Fallback to "active" if no section is defined.
-          section: task.section || "active",
-        })) || []
-      );
-      setNotes(
-        data.data.notes?.map((note) => ({
-          ...note,
-          section: note.section || "active",
-        })) || []
-      );
-    }
-  }, [data]);
-
-  // Set default filter values once sections are loaded.
-  React.useEffect(() => {
-    if (sectionsData?.data && sectionsData.data.length > 0) {
-      const activeSection = sectionsData.data.find(
-        (section) => section.name.toLowerCase() === "active"
-      );
-      if (activeSection) {
-        setTaskFilter(activeSection.id);
-        setNoteFilter(activeSection.id);
-      } else {
-        // Fallback to the first section.
-        setTaskFilter(sectionsData.data[0].id);
-        setNoteFilter(sectionsData.data[0].id);
-      }
-    }
-  }, [sectionsData]);
 
   if (!userId) {
     return <Typography>Loading...</Typography>;
@@ -160,6 +109,44 @@ export default function ProfilePage() {
   }
 
   const profile = data.data;
+  // Extract sections from the profile.
+  const profileSections: Section[] = profile.sections || [];
+
+  // Initialize tasks and notes when the profile loads.
+  React.useEffect(() => {
+    if (profile) {
+      setTasks(
+        profile.tasks?.map((task) => ({
+          ...task,
+          // Fallback to "active" if no section is defined.
+          section: task.section || "active",
+        })) || []
+      );
+      setNotes(
+        profile.notes?.map((note) => ({
+          ...note,
+          section: note.section || "active",
+        })) || []
+      );
+    }
+  }, [profile]);
+
+  // Set default filter values based on available sections.
+  React.useEffect(() => {
+    if (profileSections.length > 0) {
+      const activeSection = profileSections.find(
+        (section) => section.name.toLowerCase() === "active"
+      );
+      if (activeSection) {
+        setTaskFilter(activeSection.id);
+        setNoteFilter(activeSection.id);
+      } else {
+        // Fallback to the first section.
+        setTaskFilter(profileSections[0].id);
+        setNoteFilter(profileSections[0].id);
+      }
+    }
+  }, [profileSections]);
 
   // === TASK FUNCTIONS ===
   const addTask = () => {
@@ -169,7 +156,6 @@ export default function ProfilePage() {
       id: nextId,
       task: newTask.trim(),
       completed: false,
-      // Use the currently selected filter section.
       section: taskFilter,
     };
     const updatedTasks = [...tasks, newTaskItem];
@@ -289,60 +275,68 @@ export default function ProfilePage() {
     });
   };
 
+  // Helper function to generate a unique id for sections.
+  const generateUniqueId = () => Math.random().toString(36).substr(2, 9);
+
   // === SECTION MANAGEMENT FUNCTIONS ===
   const addNewSection = () => {
     if (newSectionName.trim() === "") return;
-    createSection(
-      {
-        resource: "sections",
-        values: { name: newSectionName.trim() },
-      },
-      {
-        onSuccess: () => {
-          setNewSectionName("");
-          refetchSections();
-        },
-      }
-    );
+    const newSection: Section = {
+      id: generateUniqueId(),
+      name: newSectionName.trim(),
+    };
+    const updatedSections = [...profileSections, newSection];
+    updateProfile({
+      resource: "profiles",
+      id: profile.id,
+      values: { sections: updatedSections },
+    });
+    setNewSectionName("");
   };
 
   const handleDeleteSection = (id: string, name: string) => {
     // Prevent deletion of default sections.
-    if (name.toLowerCase() === "active" || name.toLowerCase() === "archived" || name.toLowerCase() === "daily") return;
-    deleteSection(
-      {
-        resource: "sections",
-        id: id,
-      },
-      {
-        onSuccess: () => {
-          // Optionally, reassign tasks/notes from this section to "active".
-          const activeSection = sectionsData?.data.find(
-            (section) => section.name.toLowerCase() === "active"
-          );
-          if (activeSection) {
-            const updatedTasks = tasks.map((task) =>
-              task.section === id ? { ...task, section: activeSection.id } : task
-            );
-            setTasks(updatedTasks);
-            updateProfile({
-              id: profile.id,
-              values: { tasks: updatedTasks },
-            });
-            const updatedNotes = notes.map((note) =>
-              note.section === id ? { ...note, section: activeSection.id } : note
-            );
-            setNotes(updatedNotes);
-            updateProfile({
-              resource: "profiles",
-              id: profile.id,
-              values: { notes: updatedNotes },
-            });
-          }
-          refetchSections();
-        },
-      }
+    if (
+      name.toLowerCase() === "active" ||
+      name.toLowerCase() === "archived" ||
+      name.toLowerCase() === "daily"
+    )
+      return;
+
+    const updatedSections = profileSections.filter(
+      (section) => section.id !== id
     );
+
+    // Optionally reassign tasks and notes from the deleted section to "active"
+    const activeSection = profileSections.find(
+      (section) => section.name.toLowerCase() === "active"
+    );
+    if (activeSection) {
+      const updatedTasks = tasks.map((task) =>
+        task.section === id ? { ...task, section: activeSection.id } : task
+      );
+      setTasks(updatedTasks);
+      updateProfile({
+        resource: "profiles",
+        id: profile.id,
+        values: { tasks: updatedTasks },
+      });
+
+      const updatedNotes = notes.map((note) =>
+        note.section === id ? { ...note, section: activeSection.id } : note
+      );
+      setNotes(updatedNotes);
+      updateProfile({
+        resource: "profiles",
+        id: profile.id,
+        values: { notes: updatedNotes },
+      });
+    }
+    updateProfile({
+      resource: "profiles",
+      id: profile.id,
+      values: { sections: updatedSections },
+    });
   };
 
   // Filter tasks and notes by the selected section.
@@ -465,7 +459,7 @@ export default function ProfilePage() {
                           setNoteFilter(e.target.value as string)
                         }
                       >
-                        {sectionsData?.data.map((section: Section) => (
+                        {profileSections.map((section: Section) => (
                           <MenuItem key={section.id} value={section.id}>
                             {section.name}
                           </MenuItem>
@@ -479,7 +473,13 @@ export default function ProfilePage() {
                         <ListItem
                           key={note.id}
                           secondaryAction={
-                            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 2,
+                              }}
+                            >
                               <IconButton
                                 edge="end"
                                 aria-label="modify"
@@ -491,10 +491,13 @@ export default function ProfilePage() {
                                 <Select
                                   value={""}
                                   onChange={(e) =>
-                                    changeNoteSection(note.id, e.target.value as string)
+                                    changeNoteSection(
+                                      note.id,
+                                      e.target.value as string
+                                    )
                                   }
                                 >
-                                  {sectionsData?.data.map((section: Section) => (
+                                  {profileSections.map((section: Section) => (
                                     <MenuItem key={section.id} value={section.id}>
                                       {section.name}
                                     </MenuItem>
@@ -511,10 +514,14 @@ export default function ProfilePage() {
                             </Box>
                           }
                         >
-                          <Box sx={{ whiteSpace: "normal", wordWrap: "break-word", mr: 7 }}>
-                            <MarkdownField
-                              value={note.note}
-                            />
+                          <Box
+                            sx={{
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                              mr: 7,
+                            }}
+                          >
+                            <MarkdownField value={note.note} />
                           </Box>
                         </ListItem>
                       ))}
@@ -530,9 +537,11 @@ export default function ProfilePage() {
           </Grid>
         </Grid>
 
-        {/* Right Column: Todo List */}
+        {/* Right Column: Todo List and Section Management */}
         <Grid item xs={12} md={6}>
-          <Card sx={{ boxShadow: 3, borderRadius: 2, maxWidth: 450, margin: "auto" }}>
+          <Card
+            sx={{ boxShadow: 3, borderRadius: 2, maxWidth: 450, margin: "auto" }}
+          >
             <CardContent>
               <Typography variant="h5" gutterBottom>
                 Todo List
@@ -563,7 +572,7 @@ export default function ProfilePage() {
                     label="View"
                     onChange={(e) => setTaskFilter(e.target.value as string)}
                   >
-                    {sectionsData?.data.map((section: Section) => (
+                    {profileSections.map((section: Section) => (
                       <MenuItem key={section.id} value={section.id}>
                         {section.name}
                       </MenuItem>
@@ -577,7 +586,13 @@ export default function ProfilePage() {
                     <ListItem
                       key={task.id}
                       secondaryAction={
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
+                        >
                           <IconButton
                             edge="end"
                             aria-label="modify"
@@ -589,10 +604,13 @@ export default function ProfilePage() {
                             <Select
                               value={""}
                               onChange={(e) =>
-                                changeTaskSection(task.id, e.target.value as string)
+                                changeTaskSection(
+                                  task.id,
+                                  e.target.value as string
+                                )
                               }
                             >
-                              {sectionsData?.data.map((section: Section) => (
+                              {profileSections.map((section: Section) => (
                                 <MenuItem key={section.id} value={section.id}>
                                   {section.name}
                                 </MenuItem>
@@ -618,7 +636,11 @@ export default function ProfilePage() {
                       </ListItemIcon>
                       <ListItemText
                         primary={task.task}
-                        sx={{ whiteSpace: "normal", wordWrap: "break-word", mr: 7 }}
+                        sx={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                          mr: 7,
+                        }}
                       />
                     </ListItem>
                   ))}
@@ -634,33 +656,38 @@ export default function ProfilePage() {
             <CardContent>
               {/* Section Management Panel */}
               <Box>
-                    <Typography variant="h6">Manage Sections</Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
-                      <TextField
-                        label="New Section"
-                        value={newSectionName}
-                        onChange={(e) => setNewSectionName(e.target.value)}
-                      />
-                      <Button variant="contained" sx={{ ml: 2 }} onClick={addNewSection}>
-                        Add Section
+                <Typography variant="h6">Manage Sections</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
+                  <TextField
+                    label="New Section"
+                    value={newSectionName}
+                    onChange={(e) => setNewSectionName(e.target.value)}
+                  />
+                  <Button variant="contained" sx={{ ml: 2 }} onClick={addNewSection}>
+                    Add Section
+                  </Button>
+                </Box>
+                {profileSections.map((section: Section) => (
+                  <Box
+                    key={section.id}
+                    sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                  >
+                    <Typography sx={{ flexGrow: 1 }}>{section.name}</Typography>
+                    {(section.name.toLowerCase() !== "active" &&
+                      section.name.toLowerCase() !== "daily" &&
+                      section.name.toLowerCase() !== "archived") && (
+                      <Button
+                        color="error"
+                        onClick={() =>
+                          handleDeleteSection(section.id, section.name)
+                        }
+                      >
+                        Delete
                       </Button>
-                    </Box>
-                    {sectionsData?.data.map((section: Section) => (
-                      <Box key={section.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                        <Typography sx={{ flexGrow: 1 }}>{section.name}</Typography>
-                        {(section.name.toLowerCase() !== "active" &&
-                          section.name.toLowerCase() !== "daily" &&
-                          section.name.toLowerCase() !== "archived") && (
-                          <Button
-                            color="error"
-                            onClick={() => handleDeleteSection(section.id, section.name)}
-                          >
-                            Delete
-                          </Button>
-                        )}
-                      </Box>
-                    ))}
+                    )}
                   </Box>
+                ))}
+              </Box>
             </CardContent>
           </Card>
         </Grid>
