@@ -92,16 +92,6 @@ const Footer = () => {
                   {t("navLink3")}
                 </Link>
               </Box>
-              <Box component="li" sx={{ mb: 1 }}>
-                <Link
-                  component={NextLink}
-                  href={`/${locale}/profile`}
-                  underline="hover"
-                  sx={{ color: theme.palette.info.contrastText }}
-                >
-                  {t("navLink4")}
-                </Link>
-              </Box>
             </Box>
           </Grid>
 
