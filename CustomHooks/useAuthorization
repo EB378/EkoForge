@@ -58,7 +58,7 @@ const pageRoleMapping: Record<string, string[]> = {
   developerPage: ["Developer", "Delivery Lead"],
   salesPage: ["Sales Agent"],
   ProfilePage: ["New"], // For example, only users with role "New" can access ProfilePage.
-  LedgerPage: ["New"],
+  LedgerPage: ["Admin", "CEO"],
   ForgePage: ["New"],
   CRMPage: ["New"],
   CalendarPage: ["New"],
