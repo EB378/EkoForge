@@ -3,8 +3,12 @@
 import React from "react";
 import { Box, Typography, Divider, Stack } from "@mui/material";
 import { useShow } from "@refinedev/core";
-import { DateField, MarkdownField, Show, TextFieldComponent as TextField } from "@refinedev/mui";
-import { useParams } from "next/navigation";
+import {
+  DateField,
+  MarkdownField,
+  Show,
+  TextFieldComponent as TextField,
+} from "@refinedev/mui";
 
 // Inline component to display a client's name based on clientId.
 function ClientName({ clientId }: { clientId: string }) {
@@ -16,6 +20,18 @@ function ClientName({ clientId }: { clientId: string }) {
   });
   const clientData = queryResult?.data?.data as { client: string } | undefined;
   return <>{clientData ? clientData.client : "Not Available"}</>;
+}
+
+// Inline component to display a contact's name based on contactId.
+function ContactName({ contactId }: { contactId: string }) {
+  const { queryResult } = useShow({
+    resource: "contacts",
+    id: contactId,
+    meta: { select: "name" },
+    queryOptions: { enabled: !!contactId },
+  });
+  const contactData = queryResult?.data?.data as { name: string } | undefined;
+  return <>{contactData ? contactData.name : "Not Available"}</>;
 }
 
 // Inline component to display a profile's full name based on profileId.
@@ -46,11 +62,17 @@ export default function ShowDeal(): JSX.Element {
       <Show isLoading={isLoading}>
         <Divider sx={{ mb: 2 }} />
         <Stack spacing={2}>
+          <Typography variant="h6">ID</Typography>
+          <TextField value={deal.id} />
+
           <Typography variant="h6">Title</Typography>
           <TextField value={deal.title} />
 
           <Typography variant="h6">Client</Typography>
           <TextField value={<ClientName clientId={deal.client_id} />} />
+
+          <Typography variant="h6">Contact</Typography>
+          <TextField value={<ContactName contactId={deal.contact_id} />} />
 
           <Typography variant="h6">Accountable Person</Typography>
           <TextField value={<ProfileName profileId={deal.profile_id} />} />
@@ -64,19 +86,8 @@ export default function ShowDeal(): JSX.Element {
           <Typography variant="h6">Deal Date</Typography>
           <DateField value={deal.deal_date} />
 
-          {deal.details && (
-            <>
-              <Typography variant="h6">Details</Typography>
-              <MarkdownField value={deal.details} />
-            </>
-          )}
-
-          {deal.billing_details && (
-            <>
-              <Typography variant="h6">Billing Details</Typography>
-              <MarkdownField value={deal.billing_details} />
-            </>
-          )}
+          <Typography variant="h6">Notes</Typography>
+          <MarkdownField value={deal.notes} />
 
           <Typography variant="h6">Created At</Typography>
           <DateField value={deal.created_at} />
