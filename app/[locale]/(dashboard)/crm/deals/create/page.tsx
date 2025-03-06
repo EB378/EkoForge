@@ -1,22 +1,33 @@
 "use client";
 
-import { Autocomplete, Box, MenuItem, Select, TextField } from "@mui/material";
+import React from "react";
+import { Autocomplete, Box, TextField } from "@mui/material";
 import { Create, useAutocomplete } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { Controller } from "react-hook-form";
 
-export default function BlogPostCreate() {
+export default function DealsCreate() {
   const {
     saveButtonProps,
-    refineCore: { formLoading, onFinish },
-    handleSubmit,
+    refineCore: { formLoading },
     register,
     control,
     formState: { errors },
-  } = useForm({});
+  } = useForm();
 
-  const { autocompleteProps: categoryAutocompleteProps } = useAutocomplete({
-    resource: "categories",
+  // Autocomplete hook for Clients
+  const { autocompleteProps: clientAutocompleteProps } = useAutocomplete({
+    resource: "clients",
+  });
+
+  // Autocomplete hook for Contacts
+  const { autocompleteProps: contactAutocompleteProps } = useAutocomplete({
+    resource: "contacts",
+  });
+
+  // Autocomplete hook for Accountable Person (Profiles)
+  const { autocompleteProps: profileAutocompleteProps } = useAutocomplete({
+    resource: "profiles",
   });
 
   return (
@@ -27,54 +38,36 @@ export default function BlogPostCreate() {
         autoComplete="off"
       >
         <TextField
-          {...register("title", {
-            required: "This field is required",
-          })}
-          error={!!(errors as any)?.title}
-          helperText={(errors as any)?.title?.message}
+          label="Title"
+          {...register("title", { required: "Title is required" })}
+          error={!!errors.title}
+          helperText={errors.title?.message as string | undefined}
           margin="normal"
           fullWidth
-          InputLabelProps={{ shrink: true }}
-          type="text"
-          label={"Title"}
-          name="title"
         />
-        <TextField
-          {...register("content", {
-            required: "This field is required",
-          })}
-          error={!!(errors as any)?.content}
-          helperText={(errors as any)?.content?.message}
-          margin="normal"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          multiline
-          label={"Content"}
-          name="content"
-        />
+
         <Controller
           control={control}
-          name={"categoryId"}
-          rules={{ required: "This field is required" }}
-          // eslint-disable-next-line
+          name="client_id"
+          rules={{ required: "Client is required" }}
           defaultValue={null as any}
           render={({ field }) => (
             <Autocomplete
-              {...categoryAutocompleteProps}
+              {...clientAutocompleteProps}
               {...field}
               onChange={(_, value) => {
-                field.onChange(value.id);
+                field.onChange(value?.id);
               }}
               getOptionLabel={(item) => {
                 return (
-                  categoryAutocompleteProps?.options?.find((p) => {
+                  clientAutocompleteProps?.options?.find((p) => {
                     const itemId =
                       typeof item === "object"
                         ? item?.id?.toString()
                         : item?.toString();
                     const pId = p?.id?.toString();
                     return itemId === pId;
-                  })?.title ?? ""
+                  })?.client ?? ""
                 );
               }}
               isOptionEqualToValue={(option, value) => {
@@ -88,33 +81,145 @@ export default function BlogPostCreate() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label={"Category"}
+                  label="Client"
                   margin="normal"
                   variant="outlined"
-                  error={!!(errors as any)?.categories?.id}
-                  helperText={(errors as any)?.categories?.id?.message}
+                  error={!!errors.client_id}
+                  helperText={errors.client_id?.message as string | undefined}
                   required
                 />
               )}
             />
           )}
         />
+
         <Controller
-          name="status"
           control={control}
-          render={({ field }) => {
-            return (
-              <Select
-                {...field}
-                value={field?.value || "draft"}
-                label={"Status"}
-              >
-                <MenuItem value="draft">Draft</MenuItem>
-                <MenuItem value="published">Published</MenuItem>
-                <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
-            );
-          }}
+          name="contact_id"
+          defaultValue={null as any}
+          render={({ field }) => (
+            <Autocomplete
+              {...contactAutocompleteProps}
+              {...field}
+              onChange={(_, value) => {
+                field.onChange(value?.id);
+              }}
+              getOptionLabel={(item) => {
+                return (
+                  contactAutocompleteProps?.options?.find((p) => {
+                    const itemId =
+                      typeof item === "object"
+                        ? item?.id?.toString()
+                        : item?.toString();
+                    const pId = p?.id?.toString();
+                    return itemId === pId;
+                  })?.name ?? ""
+                );
+              }}
+              isOptionEqualToValue={(option, value) => {
+                const optionId = option?.id?.toString();
+                const valueId =
+                  typeof value === "object"
+                    ? value?.id?.toString()
+                    : value?.toString();
+                return value === undefined || optionId === valueId;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Contact"
+                  margin="normal"
+                  variant="outlined"
+                  error={!!errors.contact_id}
+                  helperText={errors.contact_id?.message as string | undefined}
+                />
+              )}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="profile_id"
+          defaultValue={null as any}
+          render={({ field }) => (
+            <Autocomplete
+              {...profileAutocompleteProps}
+              {...field}
+              onChange={(_, value) => {
+                field.onChange(value?.id);
+              }}
+              getOptionLabel={(item) => {
+                return (
+                  profileAutocompleteProps?.options?.find((p) => {
+                    const itemId =
+                      typeof item === "object"
+                        ? item?.id?.toString()
+                        : item?.toString();
+                    const pId = p?.id?.toString();
+                    return itemId === pId;
+                  })?.fullname ?? ""
+                );
+              }}
+              isOptionEqualToValue={(option, value) => {
+                const optionId = option?.id?.toString();
+                const valueId =
+                  typeof value === "object"
+                    ? value?.id?.toString()
+                    : value?.toString();
+                return value === undefined || optionId === valueId;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Accountable Person"
+                  margin="normal"
+                  variant="outlined"
+                  error={!!errors.profile_id}
+                  helperText={errors.profile_id?.message as string | undefined}
+                />
+              )}
+            />
+          )}
+        />
+
+        <TextField
+          label="Amount"
+          type="number"
+          {...register("amount", { required: "Amount is required" })}
+          error={!!errors.amount}
+          helperText={errors.amount?.message as string | undefined}
+          margin="normal"
+          fullWidth
+        />
+
+        <TextField
+          label="Status"
+          {...register("status", { required: "Status is required" })}
+          error={!!errors.status}
+          helperText={errors.status?.message as string | undefined}
+          margin="normal"
+          fullWidth
+        />
+
+        <TextField
+          label="Deal Date"
+          type="date"
+          {...register("deal_date", { required: "Deal Date is required" })}
+          error={!!errors.deal_date}
+          helperText={errors.deal_date?.message as string | undefined}
+          margin="normal"
+          fullWidth
+          InputLabelProps={{ shrink: true }}
+        />
+
+        <TextField
+          label="Notes"
+          multiline
+          rows={4}
+          {...register("notes")}
+          margin="normal"
+          fullWidth
         />
       </Box>
     </Create>
