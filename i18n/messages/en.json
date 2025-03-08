@@ -6,24 +6,24 @@
     "navLink4": "Book a Meeting"
   },
   "HomePage": {
-    "simple": "Simple.",
-    "elegant": "Elegant.",
-    "effective": "Effective.",
-    "HeroSubTitle": "Websites and digital solutions desined for startups and small buisnesses to get a kickstart to effective growth.",
+    "simple": "Smart.",
+    "elegant": "Sleek.",
+    "effective": "Powerful.",
+    "HeroSubTitle": "Websites and digital solutions designed to help startups and small businesses launch, scale, and grow—fast.",
     "CTA": "Book a Sales Call",
     "Contact Us": "Contact Us",
-
     "disrupt": "So, How Exactly Does This Work?",
     "StepOne": "Step 1: Select A Brand For Your Business",
-    "StepTwo": "Step 2: Get Yourself A Effective Website",
+    "StepTwo": "Step 2: Get Yourself A Effective Website/App",
     "StepThree": "Step 3: Get Infront Of Your Customers With Powerful SEO",
     "StepOneText": "If you haven't already, we will help you select a brand that resonates with your business and your customers.",
     "StepTwoText": "We will design and develop a website that is tailored to your business and your customers.",
     "StepThreeText": "We will help you get infront of your customers with powerful SEO and digital marketing strategies.",
-    
     "Call-To-Action": "Get Online & Start Winning Today",
     "Call-To-Action-Sub": "Customers are searching for you right now. Let’s make sure they find you.",
-    "Book Now": "CLICK HERE TO START!"
+    "Book Now": "CLICK HERE TO START!",
+    "Call-To-Action-Note": "Find out more about us",
+    "why": "> Why Do I Need A Website? <"
   },
   "Contact": {
     "title": "Contact Us",
@@ -84,12 +84,28 @@
     "finalCallText": "A bad website is costing you sales every single day. Don't let another customer slip away. Invest in a high-converting website today and watch your business soar.",
     "bookNow": "Book Now"
   },
-
   "Profile": {
     "username": "Username",
     "email": "Email",
     "phone": "Phone",
     "address": "Address",
     "role": "Role"
+  },
+  "AboutUs":{
+    "title": "About Us",
+    "subtitle": "Committed to excellence and innovation.",
+    "cta":"Let's Chat",
+    "ourStoryTitle": "Our Story",
+    "ourStoryText": "Founded in 2024, our journey started with a vision to transform the industry. We are committed to delivering excellence in every project.",
+    "ourMissionTitle": "Our Mission",
+    "ourMissionText": "Our mission is to empower small businesses through innovative solutions, integrity, and a passion for success.",
+    "ourValuesTitle": "Our Values",
+    "ourValuesText": "We are driven by our core values of excellence, integrity, and innovation. We believe in creating lasting relationships with our clients and delivering exceptional results.",
+    "ourPhilosophyTitle": "Our Philosophy",
+    "ourPhilosophyText": "We believe in a personalized approach that combines cutting-edge technology with an unwavering commitment to quality. Every project is a testament to our passion and vision for a better future.",
+    "ourApproachTitle": "Our Approach",
+    "ourApproachText": "We partner closely with our clients, taking the time to understand their unique needs. By crafting bespoke solutions, we ensure lasting impact and measurable success.",
+    "contactTitle": "Contact Us",
+    "contactSubtitle": "We'd love to hear from you! Reach out and let’s start a conversation."    
   }
 }

@@ -41,7 +41,7 @@ const Footer = () => {
           {/* About Section */}
           <Grid item xs={12} md={4}>
             <Box sx={{ mb: 2 }}>
-              <Link component={NextLink} href={`/${locale}/`} underline="none">
+              <Link component={NextLink} href={`/`} underline="none">
                 <NextImage
                   src="/Logo.svg" // Replace with your aircraft rental logo
                   alt="Logo"

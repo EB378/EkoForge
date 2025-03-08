@@ -110,7 +110,7 @@ export default function IndexPage() {
               <motion.div initial="hidden" whileInView="visible">
                 <Grid container spacing={4} justifyContent="center">
                   {cardsData.map((item, index) => (
-                    <Grid item key={index} xs={12} md={4}>
+                    <Grid item key={index} xs={12} sm={4}>
                       <motion.div
                         variants={fadeInUp}
                         whileHover={{
@@ -212,6 +212,33 @@ export default function IndexPage() {
                       {t("Book Now")}
                     </Button>
                   </motion.div>
+                </NextLink>
+                <NextLink href={`/${locale}/why`} passHref>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      mt: 4,
+                      fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+                      color: theme.palette.strong.opposite,
+                      hover: { color: theme.palette.primary.main },
+                    }}
+                  >
+                    {t("why")}
+                  </Typography>
+                </NextLink>
+                <NextLink href={`/${locale}/about`} passHref>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      mt: 4,
+                      fontSize: { xs: "0.75rem", sm: "1rem", md: "1.05rem" },
+                      color: theme.palette.strong.opposite,
+                      underline: "hover",
+                      textDecoration: "bold",
+                    }}
+                  >
+                    {t("Call-To-Action-Note")}
+                  </Typography>
                 </NextLink>
               </Container>
             </motion.div>
