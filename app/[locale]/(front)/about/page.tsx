@@ -117,7 +117,7 @@ const AboutUs = () => {
               })}
             </Typography>
             <Box sx={{ mt: 3 }}>
-              <NextLink href="/contact" passHref>
+              <NextLink href="/#contact" passHref>
                 <Button
                   variant="contained"
                   sx={{
