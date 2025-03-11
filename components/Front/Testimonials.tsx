@@ -65,7 +65,7 @@ const testimonials: Testimonial[] = [
     feedback: "The impact on our branding and visual image has been very positive. I would highly recommend these services for any company or NGO that wants to have reliable, fast paced and good quality visual updates for their social media and/or advertisement.",
     rating: 5,
     type: "photo",
-    imageUrl: "ekotestimonial1.svg",
+    imageUrl: "/ekotestimonial1.svg",
   },
   {
     id: 3,
